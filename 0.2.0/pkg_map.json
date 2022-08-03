@@ -1,0 +1,4 @@
+{
+    "mypy_extensions": "mypy-extensions",
+    "typing_extensions": "typing-extensions"
+}

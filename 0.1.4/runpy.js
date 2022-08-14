@@ -346,7 +346,8 @@ for (const script of document.getElementsByTagName('script')) {
 
         if (  script.src.search(main) >=0 ) {
             var url = script.src
-            if (script.src.endsWith(main)){
+
+            if (url.endsWith(main)){
                 url = url+"?#"
             }
 
@@ -375,7 +376,7 @@ for (const script of document.getElementsByTagName('script')) {
             // running pygbag proxy or lan testing ?
             if (location.hostname === "localhost") {
                 //config.cdn = location.origin + "/"
-                config.cdn = script.src.replace(main,"")
+                config.cdn = script.src.split("?",1)[0].replace(main,"")
             }
 
             if (vm.script.interpreter.startsWith("cpython")){

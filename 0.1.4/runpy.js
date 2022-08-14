@@ -532,8 +532,18 @@ function feat_gui(debug_hidden) {
 
         const ar = canvas.width / canvas.height
 
-        want_w = window.innerWidth
-        want_h = window.innerHeight
+        // default is maximize
+        var max_width = window.innerWidth
+        var max_height = window.innerHeight
+
+
+        if (vm.config.debug) {
+            max_width = max_width * .80
+            max_height = max_height * .80
+        }
+
+        want_w = max_width
+        want_h = max_height
 
         console.log("window:", want_w, want_h )
         if (window.devicePixelRatio != 1 )
@@ -552,14 +562,22 @@ function feat_gui(debug_hidden) {
         want_h = Math.trunc(want_w / ar)
         console.log("window[DEBUG]:", want_w, want_h, ar)
 
-        if (want_h > window.innerHeight) {
-            want_h = window.innerHeight
+
+        // constraints
+        if (want_h > max_height) {
+            want_h = max_height
             want_w = want_h * ar
         }
+        if (want_w > max_width) {
+                want_w = max_width
+                want_h = want_h / ar
+        }
+
+        // apply
 
         canvas.style.width = want_w + "px"
         canvas.style.height = want_h + "px"
-        console.log("style[NEW]:", canvas.style.width, canvas.style.height)
+        //console.log("style[NEW]:", canvas.style.width, canvas.style.height)
     }
 
     function window_resize(gui_divider) {

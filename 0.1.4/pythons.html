@@ -1,0 +1,24 @@
+<html><head><meta charset="utf-8"></head><script src="runpy.js" type=module id="main" data-src="fs,vtx,gui" async defer>#<!--
+import sys
+import platform
+import asyncio
+from pathlib import Path
+
+if sys.platform == 'emscripten':
+    from platform import window, document
+
+    def on_upload_files(ev):
+        print("on_upload_files", ev)
+        if ev.mimetype.startswith("image/"):
+            # we can display that
+            shell.display(ev.text)
+
+    platform.EventTarget.addEventListener(None, "upload", on_upload_files)
+    platform.window.dlg_multifile.hidden = false
+
+    import pygame
+
+    pygame.init()
+    pygame.display.set_mode((640, 400))
+
+# --></script></html>

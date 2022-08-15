@@ -599,12 +599,19 @@ function feat_gui(debug_hidden) {
 }
 
 function queue_event(evname, data) {
-    if (window.python)
-        python.PyRun_SimpleString(`#!
-__EMSCRIPTEN__.EventTarget.build('${evname}', """${JSON.stringify(data)}""")
+    const jsdata = JSON.stringify(data)
+    EQ.push( { name : evname, data : jsdata} )
+
+    if (window.python) {
+        while (EQ.length>0) {
+            const ev = EQ.shift()
+            python.PyRun_SimpleString(`#!
+__EMSCRIPTEN__.EventTarget.build('${ev.name}', """${ev.data}""")
 `)
-    else
-        console.warn(`Event "${evname}" dropped : too early`)
+        }
+    } else {
+        console.warn(`Event "${evname}" queued : too early`)
+    }
 }
 
 
@@ -908,6 +915,12 @@ async function media_prepare(trackid) {
     }
 }
 
+// event queue
+
+window.EQ = []
+
+
+
 // media manager
 
 
@@ -1080,29 +1093,16 @@ MM.stop = function stop(trackid) {
 
 
 
-window.TEST= async function TEST(lib) {
-// usr/lib/python3.10/site-packages/numpy/core/
-    const buffer = FS.readFile(lib || "/data/data/org.python/assets/site-packages/numpy/core/_multiarray_umath.cpython-310-wasm32-emscripten.so", { encoding: 'binary'} )
-    console.log(buffer.length)
-window.b = buffer
-    const module = await WebAssembly.compile(buffer);
-    const instance = await WebAssembly.instantiate(module, WASM_INFO)
-    console.log(instance)
-//    const instance = new WebAssembly.Instance(module);
-//    const result = instance.exports.fibonacci(42);
-
-
-
-    // if < 4K
-    //const module = new WebAssembly.Module(buffer);
-    //const instance = new WebAssembly.Instance(module);
-
+if (navigator.connection) {
+    if ( navigator.connection.type === 'cellular' ) {
+        console.warn("Cellular")
+        if ( navigator.connection.downlinkMax <= 0.115) {
+            console.warn("2G")
+        }
+    } else {
+        console.warn("Wired")
+    }
 }
-
-
-
-
-
 
 
 

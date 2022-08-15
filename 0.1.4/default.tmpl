@@ -36,6 +36,7 @@ async def pygbag_loader():
     while not track.ready:
         await asyncio.sleep(0)
 
+
     os.chdir(mount_point / "assets")
     sys.path.insert(0, os.getcwd() )
 
@@ -105,8 +106,8 @@ config = {
         /* average size of droid screen 470dp x 320dp  */
         .topright{
            position:absolute;
-           top:5px;
-           right:5px;
+           top:0px;
+           right:0px;
         }
 
         .topleft {
@@ -168,6 +169,10 @@ config = {
                     <div id=load_max>max</div>
                   <button id="load_rst" disabled>RESET</button>
                 </div>
+
+                <div id="level">(battery level unknown)</div>
+                <div id="stateBattery">(charging state unknown)</div>
+
             </div>
 
 

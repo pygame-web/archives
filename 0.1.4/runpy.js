@@ -1081,31 +1081,41 @@ MM.load = function load(trackid, loops) {
 
 MM.play = function play(trackid, loops, start, fade_ms) {
 //console.log("MM.play",trackid, loops, MM[trackid] )
-            MM[trackid].loops = loops
-            MM[trackid].media.play()
-        }
+            const track = MM[trackid]
+            track.loops = loops
+            if (track.ready)
+                track.media.play()
+            else {
+                console.warn("Cannot play before user interaction, will retry", track )
+                function play_asap() {
+                    if (track.ready) {
+                        track.media.play()
+                    } else {
+                        setTimeout(play_asap, 500)
+                    }
+                }
+                play_asap()
+            }
+}
 
 MM.stop = function stop(trackid) {
 //console.log("MM.stop", trackid, MM[trackid] )
             MM[trackid].media.pause()
-        }
-
-
-
+}
 
 if (navigator.connection) {
     if ( navigator.connection.type === 'cellular' ) {
-        console.warn("Cellular")
+        console.warn("Connection:","Cellular")
         if ( navigator.connection.downlinkMax <= 0.115) {
-            console.warn("2G")
+            console.warn("Connection:","2G")
         }
     } else {
-        console.warn("Wired")
+        console.warn("Connection:","Wired")
     }
 }
 
 
-
+//TODO battery
 
 
 

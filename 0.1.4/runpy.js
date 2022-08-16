@@ -309,10 +309,9 @@ const vm = {
 }
 
 
-
 async function custom_postrun() {
     console.warn("VM.postrun")
-    if (await _rcp(vm.config.cdn + "pythonrc.py")) {
+    if (await _rcp(vm.config.cdn + "pythonrc.py","/data/data/pythonrc.py")) {
         python.PyConfig.executable = "windows.url"
         var runsite = `#!
 import os,sys,json
@@ -328,7 +327,6 @@ if os.path.isfile("/data/data/pythonrc.py"):
 # <- keep it here
 `
 
-
         vm.FS.writeFile( "/data/data/org.python/assets/main.py" , vm.script.main[0] )
 
         python.PyRun_SimpleString(runsite)
@@ -337,7 +335,6 @@ if os.path.isfile("/data/data/pythonrc.py"):
 
 
 }
-
 
 
 for (const script of document.getElementsByTagName('script')) {

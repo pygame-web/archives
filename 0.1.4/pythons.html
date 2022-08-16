@@ -4,7 +4,7 @@ import asyncio
 from pathlib import Path
 
 if sys.platform == 'emscripten':
-    from platform import window, document
+    from platform import window, document, EventTarget
 
 
     def on_upload_files(ev):
@@ -13,8 +13,8 @@ if sys.platform == 'emscripten':
             # we can display that
             shell.display(ev.text)
 
-    platform.EventTarget.addEventListener(None, "upload", on_upload_files)
-    platform.window.dlg_multifile.hidden = false
+    EventTarget.addEventListener(None, "upload", on_upload_files)
+    window.dlg_multifile.hidden = false
 
     import pygame
 

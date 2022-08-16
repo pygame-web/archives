@@ -312,7 +312,7 @@ const vm = {
 
 async function custom_postrun() {
     console.warn("VM.postrun")
-    if (await _rcp("pythonrc.py")) {
+    if (await _rcp(vm.config.cdn + "pythonrc.py")) {
         python.PyConfig.executable = "windows.url"
         var runsite = `#!
 import os,sys,json

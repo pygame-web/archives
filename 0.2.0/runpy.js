@@ -840,6 +840,10 @@ function feat_lifecycle() {
 async function onload() {
     var debug_hidden = true;
 
+    // this is how emscripten "os layer" will find it
+    window.Module = vm
+
+
     // TODO:  -x
     if ( window.top.location.hash.search("#debug")>=0) {
         debug_hidden = false;
@@ -921,7 +925,6 @@ async function onload() {
     vm.vt.xterm.write('OK\r\nPlease \x1B[1;3;31mwait\x1B[0m ...\r\n')
 
 
-    window.Module = vm
 
     if (window.window_resize)
         window_resize(vm.config.gui_divider)

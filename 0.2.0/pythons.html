@@ -1,0 +1,75 @@
+<html><head><meta charset="utf-8"></head><script src="runpy.js" type=module id="site" data-src="fs,vtx,gui" async defer>#<!--
+import sys
+import platform
+import asyncio
+from pathlib import Path
+
+# screen pixels (real, hardware)
+WIDTH=1024
+HEIGHT=600
+
+# reference/idealized screen pixels
+REFX = 1980
+REFY = 1080
+
+
+def ux(v):
+    global WIDTH, REFX
+    if abs(v)<0.9999999:
+        result = int( (float(WIDTH)/100.0) * (v*1000))
+        if v<0:
+            return WIDTH-result
+        return result
+    return int( (WIDTH/REFX) * v )
+
+def uy(v):
+    global HEIGHT, REFY
+    if abs(v)<0.9999999:
+        result = int( (float(HEIGHT)/100.0) * (v*1000))
+        if v<0:
+            return HEIGHT-result
+        return result
+    return int( (HEIGHT/REFY) * v )
+
+
+if sys.platform in ("emscripten",):
+    log =  window.console
+
+    try:
+        #platform.document.body.style.background = "#404040"
+        import pygame
+        screen = pygame.display.set_mode([ux(.100),uy(.100)], pygame.SRCALPHA, 32)
+        screen.set_colorkey( (0,0,0,0), pygame.RLEACCEL )
+        screen.fill( (0,0,0,0) )
+
+        #ctx = window.canvas.getContext("2d")
+        #ctx.clearRect(5,50,window.canvas.width/5,window.canvas.height)
+
+
+    except Exception as _:
+        sys.print_exception(_)
+        log.error("cannot load pygame and clear canvas")
+
+
+async def main():
+    global ctx
+    rng = 10 # resolution of progress bar
+    slot = ux(.060)/rng # 60%
+    for i in range(rng):
+
+        marginx = ux(.020) # 20%
+        marginy = uy(.045) # 45%
+        pygame.draw.rect(screen,(10,10,10),( marginx-ux(10), marginy-uy(10), (rng*slot)+ux(20), uy(110) ) )
+        pygame.draw.rect(screen,(0,255,0), ( marginx, marginy, (1+i)*slot, uy(90)) )
+        pygame.display.update()
+        window.chromakey(None, *screen.get_colorkey(), 30)
+        await asyncio.sleep(1)
+
+
+
+asyncio.run(main())
+
+embed.run()
+
+# --></script></html>
+

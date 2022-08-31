@@ -43,10 +43,6 @@ if sys.platform in ("emscripten",):
         screen.set_colorkey( (0,0,0,0), pygame.RLEACCEL )
         screen.fill( (0,0,0,0) )
 
-        #ctx = window.canvas.getContext("2d")
-        #ctx.clearRect(5,50,window.canvas.width/5,window.canvas.height)
-
-
     except Exception as _:
         sys.print_exception(_)
         log.error("cannot load pygame and clear canvas")

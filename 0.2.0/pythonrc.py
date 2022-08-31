@@ -888,15 +888,9 @@ def CSR(*argv):
         sys.__stdout__.write(chr(27), "[", arg, sep="", endl="")
 
 pgzrun = None
-if sys.argv[0]!="org.python":
-    try:
-        import pygame
-    except Exception as e:
-        sys.print_exception(e)
-        print("pygame cannot load")
 
-if os.path.isfile('/data/data/custom.py'):
-    execfile('/data/data/custom.py')
+if os.path.isfile('/data/data/usersite.py'):
+    execfile('/data/data/usersite.py')
 
 import aio.recycle
 # ============================================================

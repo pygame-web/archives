@@ -384,6 +384,7 @@ function feat_gui(debug_hidden) {
     var canvas = document.getElementById("canvas")
 
     if (!canvas) {
+        config.user_canvas ??= 0
         canvas = document.createElement("canvas")
         canvas.id = "canvas"
         canvas.style.position = "absolute"
@@ -391,6 +392,9 @@ function feat_gui(debug_hidden) {
         canvas.style.right = "0px"
         document.body.appendChild(canvas)
         var ctx = canvas.getContext("2d")
+    } else {
+        // user managed canvas
+        config.user_canvas ??= 1
     }
 
     vm.canvas = canvas
@@ -416,22 +420,25 @@ function feat_gui(debug_hidden) {
         want_w = max_width
         want_h = max_height
 
-        console.log("window:", want_w, want_h )
+        console.log("window_canvas_adjust:", want_w, want_h )
         if (window.devicePixelRatio != 1 )
             console.warn("Unsupported device pixel ratio", window.devicePixelRatio)
 
-
-        // TODO: check height bounding box
         if (vm.config.debug) {
             divider = vm.config.gui_debug
         } else {
             divider ??= vm.config.gui_divider || 1
         }
 
-        console.log("window[DEBUG]:", want_w, want_h, ar, divider)
+
+        if (vm.config.debug)
+            console.log("window[DEBUG]:", want_w, want_h, ar, divider)
+
         want_w = Math.trunc(want_w / divider )
         want_h = Math.trunc(want_w / ar)
-        console.log("window[DEBUG]:", want_w, want_h, ar)
+
+        if (vm.config.debug)
+            console.log("window[DEBUG:CORRECTED]:", want_w, want_h, ar, divider)
 
 
         // constraints
@@ -439,6 +446,7 @@ function feat_gui(debug_hidden) {
             want_h = max_height
             want_w = want_h * ar
         }
+
         if (want_w > max_width) {
                 want_w = max_width
                 want_h = want_h / ar
@@ -448,6 +456,22 @@ function feat_gui(debug_hidden) {
 
         canvas.style.width = want_w + "px"
         canvas.style.height = want_h + "px"
+
+        if (vm.config.debug) {
+            canvas.style.margin= "none"
+            canvas.style.left = "auto"
+            canvas.style.bottom = "auto"
+        } else {
+            if (!vm.config.user_canvas) {
+                // center canvas
+                canvas.style.position = "absolute"
+                canvas.style.left = 0
+                canvas.style.bottom = 0
+                canvas.style.top = 0
+                canvas.style.right = 0
+                canvas.style.margin= "auto"
+            }
+        }
         //console.log("style[NEW]:", canvas.style.width, canvas.style.height)
     }
 
@@ -752,9 +776,10 @@ console.log("cleanup while loading wasm", "has_parent?", is_iframe(), "Parent:",
         }
     }
 
-// <!--
 
-    document.getElementById('html').insertAdjacentHTML('beforeend', `
+    if (!window.transfer) {
+// <!--
+        document.getElementById('html').insertAdjacentHTML('beforeend', `
 <style>
     div.emscripten { text-align: center; }
 </style>
@@ -765,10 +790,8 @@ console.log("cleanup while loading wasm", "has_parent?", is_iframe(), "Parent:",
     </div>
 </div>
 `);
-
-
-
 // -->
+    }
 
     console.warn("Loading python interpreter from", config.executable)
     const jswasmloader=document.createElement('script')
@@ -828,19 +851,6 @@ async function media_prepare(trackid) {
         )
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1195,23 +1205,6 @@ if (navigator.connection) {
 }
 
 
-//TODO battery
-
-
-window.debug = function () {
-    vm.config.debug = true
-    const debug_hidden =  false
-    if (window.custom_onload)
-        window.custom_onload(debug_hidden)
-    else {
-        for (const e of ["pyconsole","system","iframe","transfer","info","box","terminal"] ) {
-            if (window[e])
-                window[e].hidden = debug_hidden
-        }
-    }
-    vm.PyRun_SimpleString("shell.uptime()")
-    window_resize()
-}
 
 
 window.chromakey = function(context, r,g,b, tolerance, alpha) {
@@ -1234,6 +1227,41 @@ window.chromakey = function(context, r,g,b, tolerance, alpha) {
         }
     }
     context.putImageData(imageData, 0, 0);
+}
+
+
+
+
+//TODO: battery
+    // https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager/levelchange_event
+
+//TODO: camera+audio cap
+    //https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+
+// https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API
+    //https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy/camera
+
+// https://developer.mozilla.org/en-US/docs/Web/API/Accelerometer
+
+// https://developer.mozilla.org/en-US/docs/Web/API/AmbientLightSensor
+
+
+
+window.debug = function () {
+    vm.config.debug = true
+    const debug_hidden =  false
+    try {
+        window.custom_onload(debug_hidden)
+
+    } catch (x) {
+        console.warn("custom_onload failed : ", x)
+        for (const e of ["pyconsole","system","iframe","transfer","info","box","terminal"] ) {
+            if (window[e])
+                window[e].hidden = debug_hidden
+        }
+    }
+    vm.PyRun_SimpleString("shell.uptime()")
+    window_resize()
 }
 
 

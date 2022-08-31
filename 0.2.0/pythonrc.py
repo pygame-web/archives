@@ -342,6 +342,15 @@ if defined("embed") and hasattr(embed, "readline"):
         def mute(cls, *argv, **env):
             try:
                 pygame.mixer.music.unload()
+                yield "music muted"
+            except:
+                pass
+
+        @classmethod
+        def debug(cls, *argv, **env):
+            try:
+                platform.window.debug()
+                yield f"debug mode : on, canvas divider {window.python.config.gui_debug}"
             except:
                 pass
 

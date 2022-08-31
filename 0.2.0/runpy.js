@@ -29,7 +29,7 @@ function _until(fn_solver){
     }
 }
 
-function defined(e, o){
+function defined(e, o) {
     if (typeof o === 'undefined' || o === null)
         o = window;
     try {
@@ -374,140 +374,10 @@ for what,fn in (
 }
 
 
-for (const script of document.getElementsByTagName('script')) {
-    const main = "runpy.js"
-    if (script.type == 'module') {
-        if (  script.src.search(main) >=0 ) {
-            var url = script.src
 
-console.error("TODO: clearly separate running from script.src and location")
-
-            if (url.endsWith(main)){
-                url = url + location.search + location.hash
-console.warn("Running from location", url)
-            }
-
-            var elems = url.rsplit('#',1)
-                url = elems.shift()
-
-            var code
-
-            if (script.text.length) {
-                Array.prototype.push.apply(vm.sys_argv, elems.shift().split("%20"))
-console.warn("Passing hash as script+sys.argv", vm.sys_argv)
-                code = script.text
-            }
-
-            elems = url.rsplit('?',1)
-            url = elems.shift()
+// ===================== DOM features ====================
 
 
-            Array.prototype.push.apply(vm.cpy_argv, elems.shift().split("&") )
-
-            vm.script.interpreter = vm.cpy_argv[0]
-
-            // running pygbag proxy or lan testing ?
-            if (location.hostname === "localhost") {
-                config.cdn = script.src.split("?",1)[0].replace(main,"")
-            }
-
-
-            config.cdn     ??= script.src.split(main,1)[0],
-            config.xtermjs ??= 0
-
-            //config.archive  ??= 0
-config.archive ??= (location.search.search(".apk")>=0)
-
-            config.debug ??= (location.hash.search("#debug")>=0)
-// TODO debug should force -i or just display vt ?
-config.interactive ??= (location.search.search("-i")>=0)
-
-            config.gui_debug ??= 2
-
-            config.autorun  ??= 0
-            config.features ??= script.dataset.src.split(","),
-            config.PYBUILD  ??= vm.script.interpreter.substr(7) || "3.11",
-            config._sdl2    ??= "canvas"
-
-            config.pydigits ??= config.PYBUILD.replace(".","")
-            config.executable ??= `${config.cdn}python${config.pydigits}/main.js`
-
-
-            vm.PyConfig = JSON.parse(`
-                {
-                    "base_executable" : null,
-                    "base_prefix" : null,
-                    "buffered_stdio" : null,
-                    "bytes_warning" : 0,
-                    "warn_default_encoding" : 0,
-                    "code_debug_ranges" : 1,
-                    "check_hash_pycs_mode" : "default",
-                    "configure_c_stdio" : 1,
-                    "dev_mode" : -1,
-                    "dump_refs" : 0,
-                    "exec_prefix" : null,
-                    "executable" : "${config.executable}",
-                    "faulthandler" : 0,
-                    "filesystem_encoding" : "utf-8",
-                    "filesystem_errors" : "surrogatepass",
-                    "use_hash_seed" : 1,
-                    "hash_seed" : 1,
-                    "home": null,
-                    "import_time" : 0,
-                    "inspect" : 1,
-                    "install_signal_handlers" :0 ,
-                    "interactive" : ${config.interactive},
-                    "isolated" : 1,
-                    "legacy_windows_stdio":0,
-                    "malloc_stats" : 0 ,
-                    "platlibdir" : "lib",
-                    "prefix" : "/data/data/org.python/assets/site-packages",
-                    "ps1" : ">>> ",
-                    "ps2" : "... "
-                }`)
-
-            vm.PyConfig.sys_argv = vm.sys_argv
-            vm.PyConfig.cpy_argv = vm.cpy_argv
-
-            for (const prop in config)
-                console.log(`config.${prop} =`, config[prop] )
-
-            console.log('interpreter=', vm.script.interpreter)
-            console.log('interpreter[argv]', vm.cpy_argv)
-            console.log('sys.argv: ' , vm.sys_argv)
-            console.log('url=', url)
-            console.log('src=', script.src)
-            console.log('data-src=', script.dataset.src)
-            console.log('script: id=', script.id)
-            console.log('code : ' , code.length, ` as ${script.id}.py`)
-            vm.config = config
-
-// TODO remote script
-            vm.script.main = [ code ]
-
-// TODO scripts argv ( sys.argv )
-
-            // only one script tag for now
-            break
-        }
-    } else {
-        console.log("script?", script.type, script.id, script.src, script.text )
-    }
-}
-
-for (const script of document.getElementsByTagName('script')) {
-    // process py-script brython whatever and push to vm.script.main
-    // for concat with vm.FS.writeFile
-}
-
-
-
-
-
-// CANVAS
-
-// TODO : variable SIZE ratio vs PARENT
-//  default is 1/2
 
 function feat_gui(debug_hidden) {
 
@@ -521,55 +391,8 @@ function feat_gui(debug_hidden) {
         canvas.style.right = "0px"
         document.body.appendChild(canvas)
         var ctx = canvas.getContext("2d")
-
-/* TODO: make canvas transparent while loading ?
-ctx.globalAlpha = 0.0
-         ctx.fillStyle = "green";
-         ctx.fillRect(20, 20, 75, 50);
-         ctx.globalAlpha = 0.0;
-         ctx.fillStyle = "yellow";
-         ctx.fillRect(50, 50, 75, 50);
-         ctx.fillStyle = "red";
-         ctx.fillRect(80, 80, 75, 50);
-*/
     }
 
-/* TODO: compositing ?
-    //var canvas = document.getElementById('canvas');
-
-    var gl_aa = true
-    var gl = null
-
-    // 3D canvas
-    try {
-        //gl = canvas.getContext("webgl2", {antialias:gl_aa}) || canvas.getContext("webgl", {antialias:gl_aa});
-        gl = canvas.getContext("webgl2", {antialias:gl_aa});
-    } catch (x) {
-        console.log("WebGL : error "+x)
-        gl = null;
-    }
-
-    if (!gl) {
-        var msg = "WebGL : your browser doesn't support WebGL. This application won't work.\r\n";
-        console.log(msg);
-        vm.vt.xterm.write(msg);
-        return;
-
-    }
-
-    var ext = gl.getExtension('OES_standard_derivatives');
-    if (!ext)
-        console.log('WebGL : [OES_standard_derivatives] supported');
-    else
-        console.log('WebGL : Error [OES_standard_derivatives] derivatives *not* supported');
-
-
-    var antialias = gl.getContextAttributes().antialias;
-    console.log('WebGL : antialias = '+antialias);
-
-    var aasize = gl.getParameter(gl.SAMPLES);
-    console.log('WebGL : antialias size = '+aasize );
-*/
     vm.canvas = canvas
 
 
@@ -646,21 +469,8 @@ ctx.globalAlpha = 0.0
 
 }
 
-function queue_event(evname, data) {
-    const jsdata = JSON.stringify(data)
-    EQ.push( { name : evname, data : jsdata} )
 
-    if (window.python) {
-        while (EQ.length>0) {
-            const ev = EQ.shift()
-            python.PyRun_SimpleString(`#!
-__EMSCRIPTEN__.EventTarget.build('${ev.name}', """${ev.data}""")
-`)
-        }
-    } else {
-        console.warn(`Event "${evname}" queued : too early`)
-    }
-}
+
 
 
 // file transfer (upload)
@@ -957,14 +767,15 @@ console.log("cleanup while loading wasm", "has_parent?", is_iframe(), "Parent:",
 `);
 
 
+
+// -->
+
     console.warn("Loading python interpreter from", config.executable)
     const jswasmloader=document.createElement('script')
     jswasmloader.setAttribute("type","text/javascript")
     jswasmloader.setAttribute("src", config.executable )
     jswasmloader.setAttribute('async', true);
     document.head.appendChild(jswasmloader)
-
-// -->
 
 }
 
@@ -1018,13 +829,172 @@ async function media_prepare(trackid) {
     }
 }
 
-// event queue
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+for (const script of document.getElementsByTagName('script')) {
+    const main = "runpy.js"
+    if (script.type == 'module') {
+        if (  script.src.search(main) >=0 ) {
+            var url = script.src
+
+console.error("TODO: clearly separate running from script.src and location")
+
+            if (url.endsWith(main)){
+                url = url + location.search + location.hash
+console.warn("Running from location", url)
+            }
+
+            var elems = url.rsplit('#',1)
+                url = elems.shift()
+
+            var code
+
+            if (script.text.length) {
+                Array.prototype.push.apply(vm.sys_argv, elems.shift().split("%20"))
+console.warn("Passing hash as script+sys.argv", vm.sys_argv)
+                code = script.text
+            }
+
+            elems = url.rsplit('?',1)
+            url = elems.shift()
+
+
+            Array.prototype.push.apply(vm.cpy_argv, elems.shift().split("&") )
+
+            vm.script.interpreter = vm.cpy_argv[0]
+
+            // running pygbag proxy or lan testing ?
+            if (location.hostname === "localhost") {
+                config.cdn = script.src.split("?",1)[0].replace(main,"")
+            }
+
+
+            config.cdn     ??= script.src.split(main,1)[0],
+            config.xtermjs ??= 0
+
+            //config.archive  ??= 0
+config.archive ??= (location.search.search(".apk")>=0)
+
+            config.debug ??= (location.hash.search("#debug")>=0)
+// TODO debug should force -i or just display vt ?
+config.interactive ??= (location.search.search("-i")>=0)
+
+            config.gui_debug ??= 2
+
+            config.autorun  ??= 0
+            config.features ??= script.dataset.src.split(","),
+            config.PYBUILD  ??= vm.script.interpreter.substr(7) || "3.11",
+            config._sdl2    ??= "canvas"
+
+            config.pydigits ??= config.PYBUILD.replace(".","")
+            config.executable ??= `${config.cdn}python${config.pydigits}/main.js`
+
+
+            vm.PyConfig = JSON.parse(`
+                {
+                    "base_executable" : null,
+                    "base_prefix" : null,
+                    "buffered_stdio" : null,
+                    "bytes_warning" : 0,
+                    "warn_default_encoding" : 0,
+                    "code_debug_ranges" : 1,
+                    "check_hash_pycs_mode" : "default",
+                    "configure_c_stdio" : 1,
+                    "dev_mode" : -1,
+                    "dump_refs" : 0,
+                    "exec_prefix" : null,
+                    "executable" : "${config.executable}",
+                    "faulthandler" : 0,
+                    "filesystem_encoding" : "utf-8",
+                    "filesystem_errors" : "surrogatepass",
+                    "use_hash_seed" : 1,
+                    "hash_seed" : 1,
+                    "home": null,
+                    "import_time" : 0,
+                    "inspect" : 1,
+                    "install_signal_handlers" :0 ,
+                    "interactive" : ${config.interactive},
+                    "isolated" : 1,
+                    "legacy_windows_stdio":0,
+                    "malloc_stats" : 0 ,
+                    "platlibdir" : "lib",
+                    "prefix" : "/data/data/org.python/assets/site-packages",
+                    "ps1" : ">>> ",
+                    "ps2" : "... "
+                }`)
+
+            vm.PyConfig.sys_argv = vm.sys_argv
+            vm.PyConfig.cpy_argv = vm.cpy_argv
+
+            for (const prop in config)
+                console.log(`config.${prop} =`, config[prop] )
+
+            console.log('interpreter=', vm.script.interpreter)
+            console.log('interpreter[argv]', vm.cpy_argv)
+            console.log('sys.argv: ' , vm.sys_argv)
+            console.log('url=', url)
+            console.log('src=', script.src)
+            console.log('data-src=', script.dataset.src)
+            console.log('script: id=', script.id)
+            console.log('code : ' , code.length, ` as ${script.id}.py`)
+            vm.config = config
+
+// TODO remote script
+            vm.script.main = [ code ]
+
+// TODO scripts argv ( sys.argv )
+
+            // only one script tag for now
+            break
+        }
+    } else {
+        console.log("script?", script.type, script.id, script.src, script.text )
+    }
+}
+
+for (const script of document.getElementsByTagName('script')) {
+    // process py-script brython whatever and push to vm.script.main
+    // for concat with vm.FS.writeFile
+}
+
+
+
+// ============================== event queue =============================
 
 window.EQ = []
 
 
+function queue_event(evname, data) {
+    const jsdata = JSON.stringify(data)
+    EQ.push( { name : evname, data : jsdata} )
 
-// media manager
+    if (window.python) {
+        while (EQ.length>0) {
+            const ev = EQ.shift()
+            python.PyRun_SimpleString(`#!
+__EMSCRIPTEN__.EventTarget.build('${ev.name}', """${ev.data}""")
+`)
+        }
+    } else {
+        console.warn(`Event "${evname}" queued : too early`)
+    }
+}
+
+
+// =============================  media manager ===========================
 
 
 window.MM = { tracks : 0 }
@@ -1118,9 +1088,11 @@ console.log("MM.cross_dl", trackid, transport, type, url )
 
         if (audio) {
             track.set_volume = (v) => { track.media.volume = 0.0 + v }
+            track.get_volume = () => { return track.media.volume }
             track.media = audio
-            track.play = () => { track.media.play() }
+            track.play = (v) => { track.loops = v; track.media.play() }
             track.stop = () => { track.media.pause() }
+            MM_autoevents(track)
         }
 
 //console.log("MM.prepare", url,"queuing as",trackid)
@@ -1130,8 +1102,30 @@ console.log("MM.cross_dl", trackid, transport, type, url )
 }
 
 
+function MM_autoevents(track) {
+    const media = track.media
 
+    if (media.MM_autoevents) {
+        return
+    }
 
+    media.MM_auto = 1
+    media.addEventListener("canplaythrough", (event) => {
+        track.ready = true
+        if (track.auto)
+            media.play()
+    })
+
+    media.addEventListener('ended', (event) => {
+        if (track.loops<0)
+            media.play()
+
+        if (track.loops>0) {
+            track.loops--;
+            media.play()
+        }
+    })
+}
 
 
 
@@ -1150,24 +1144,7 @@ MM.load = function load(trackid, loops) {
 
 
     if (track.type === "audio") {
-        const media = track.media
-
-        media.addEventListener("canplaythrough", (event) => {
-            track.ready = true
-            if (track.auto)
-                media.play()
-        })
-
-        media.addEventListener('ended', (event) => {
-            if (track.loops<0)
-                media.play()
-
-            if (track.loops>0) {
-                track.loops--;
-                media.play()
-            }
-        })
-
+        MM_autoevents( track )
         return trackid
     }
 

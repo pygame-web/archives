@@ -1,45 +1,6 @@
 "use strict";
 
-for (const css of ["./xtermjsixel/xterm.css","./xtermjsixel/style.css"]) {
-        const cssref = document.createElement('link')
-        cssref.setAttribute("rel", "stylesheet")
-        cssref.setAttribute("type", "text/css")
-        cssref.setAttribute("href", css)
-        document.getElementsByTagName("head")[0].appendChild(cssref)
-}
-
-/*
-    https://github.com/xtermjs/xterm.js/issues/1004
-   xterm = new Terminal({
-      theme: {
-        foreground: '#ffffff',
-        background: '#000',
-        cursor: '#ffffff',
-        selection: 'rgba(255, 255, 255, 0.3)',
-        black: '#000000',
-        red: '#e06c75',
-        brightRed: '#e06c75',
-        green: '#A4EFA1',
-        brightGreen: '#A4EFA1',
-        brightYellow: '#EDDC96',
-        yellow: '#EDDC96',
-        magenta: '#e39ef7',
-        brightMagenta: '#e39ef7',
-        cyan: '#5fcbd8',
-        brightBlue: '#5fcbd8',
-        brightCyan: '#5fcbd8',
-        blue: '#5fcbd8',
-        white: '#d0d0d0',
-        brightBlack: '#808080',
-        brightWhite: '#ffffff'
-      }
-    })
-*/
-
-
-
 var readline = { last_cx : -1 , index : 0, history : ["help()"] }
-
 
 readline.complete = function (line) {
     if ( readline.history[ readline.history.length -1 ] != line )
@@ -49,9 +10,8 @@ readline.complete = function (line) {
 
 }
 
-var imported
+
 if (!window.Terminal) {
-    imported = true
     var xterm_cdn
     if (window.Module.config && window.Module.config.cdn) {
         xterm_cdn = window.Module.config.cdn+"xtermjsixel/"
@@ -59,6 +19,14 @@ if (!window.Terminal) {
     } else {
         xterm_cdn ??= "https://pygame-web.github.io/archives/0.2.0/xtermjsixel/"
         console.warn("Terminal+ImageAddon importing from fallback ", xterm_cdn)
+    }
+
+    for (const css of ["xterm.css","style.css"]) {
+            const cssref = document.createElement('link')
+            cssref.setAttribute("rel", "stylesheet")
+            cssref.setAttribute("type", "text/css")
+            cssref.setAttribute("href", xterm_cdn + css)
+            document.getElementsByTagName("head")[0].appendChild(cssref)
     }
 
     await import(xterm_cdn + "xterm.js")
@@ -296,30 +264,9 @@ export class WasmTerminal {
 
 }
 
-if (1){ //!imported) {
-    window.WasmTerminal = WasmTerminal
-    window.readline = readline
-    console.log("vtx done")
-}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+window.WasmTerminal = WasmTerminal
+window.readline = readline
 
 
 

@@ -340,7 +340,6 @@ async function custom_postrun() {
     console.warn("VM.postrun")
 
     if (await _rcp(vm.config.cdn + "pythonrc.py","/data/data/pythonrc.py")) {
-        python.PyConfig.executable = window.url
 
         vm.FS.writeFile( "/data/data/org.python/assets/main.py" , vm.script.main[0] )
 
@@ -911,7 +910,6 @@ config.interactive ??= (location.search.search("-i")>=0)
 
             config.pydigits ??= config.PYBUILD.replace(".","")
             config.executable ??= `${config.cdn}python${config.pydigits}/main.js`
-
 
             vm.PyConfig = JSON.parse(`
                 {

@@ -14,23 +14,27 @@ REFX = 1980
 REFY = 1080
 
 
-def ux(v):
-    global WIDTH, REFX
+def u(real, ref, v):
     if abs(v)<0.9999999:
-        result = int( (float(WIDTH)/100.0) * (v*1000))
+        result = int( (float(real)/100.0) * (v*1000))
         if v<0:
-            return WIDTH-result
+            return real-result
         return result
-    return int( (WIDTH/REFX) * v )
+    return int( (real/ref) * v )
 
-def uy(v):
+def ux(*argv):
+    global WIDTH, REFX
+    acc = 0
+    for v in argv:
+        acc += u(WIDTH, REFX, v)
+    return acc
+
+def uy(*argv):
     global HEIGHT, REFY
-    if abs(v)<0.9999999:
-        result = int( (float(HEIGHT)/100.0) * (v*1000))
-        if v<0:
-            return HEIGHT-result
-        return result
-    return int( (HEIGHT/REFY) * v )
+    acc = 0
+    for v in argv:
+        acc += u(HEIGHT, REFY, v)
+    return acc
 
 
 if sys.platform in ("emscripten",):

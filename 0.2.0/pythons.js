@@ -472,7 +472,6 @@ function feat_gui(debug_hidden) {
                 canvas.style.margin= "auto"
             }
         }
-        //console.log("style[NEW]:", canvas.style.width, canvas.style.height)
     }
 
     function window_resize(gui_divider) {
@@ -710,7 +709,6 @@ async function onload() {
     feat_lifecycle()
 
     // container for html output
-
     var html = document.getElementById('html')
     if (!html){
         html = document.createElement('div')

@@ -6,6 +6,33 @@ import platform
 import json
 from pathlib import Path
 
+# screen pixels (real, hardware)
+WIDTH=1024
+HEIGHT=600
+
+# reference/idealized screen pixels
+REFX = 1980
+REFY = 1080
+
+
+def ux(v):
+    global WIDTH, REFX
+    if abs(v)<0.9999999:
+        result = int( (float(WIDTH)/100.0) * (v*1000))
+        if v<0:
+            return WIDTH-result
+        return result
+    return int( (WIDTH/REFX) * v )
+
+def uy(v):
+    global HEIGHT, REFY
+    if abs(v)<0.9999999:
+        result = int( (float(HEIGHT)/100.0) * (v*1000))
+        if v<0:
+            return HEIGHT-result
+        return result
+    return int( (HEIGHT/REFY) * v )
+
 print("""
 Loading {{cookiecutter.title}} from {{cookiecutter.archive}}.apk
     Pygbag Version : {{cookiecutter.version}}
@@ -23,7 +50,25 @@ Loading {{cookiecutter.title}} from {{cookiecutter.archive}}.apk
 async def sitecustomize():
     import embed
 
-    print(json.dumps(PyConfig, sort_keys=True, indent=4))
+    platform.document.body.style.background = "#7f7f7f"
+
+    import pygame
+
+    def compose():
+        pygame.display.update()
+        window.chromakey(None, *screen.get_colorkey(), 40)
+
+    screen = pygame.display.set_mode([ux(.100),uy(.100)], pygame.SRCALPHA, 32)
+    screen.set_colorkey( (0,0,0,0), pygame.RLEACCEL )
+    screen.fill( (0,0,0,0) )
+
+    compose()
+
+    platform.window.transfer.hidden = true
+    platform.window.canvas.style.visibility = "visible"
+
+
+    #print(json.dumps(PyConfig, sort_keys=True, indent=4))
 
     apk = "{{cookiecutter.archive}}.apk"
 
@@ -31,8 +76,11 @@ async def sitecustomize():
 
     # the C or js loader could do that but be explicit.
     appdir = Path(f"/data/data/{bundle}") # /data/data/{{cookiecutter.archive}}
-
     appdir.mkdir()
+
+
+    # mount apk
+
     cfg = {
         "io": "url",
         "type":"mount",
@@ -45,11 +93,19 @@ async def sitecustomize():
 
     track = platform.window.MM.prepare(apk, json.dumps(cfg))
 
-    while not track.ready:
-        await asyncio.sleep(0)
+    # wait until zip mount + overlayfs is complete
 
-    platform.window.transfer.hidden = true
-    platform.window.canvas.style.visibility = "visible"
+    while not track.ready:
+        # resolution of progress bar
+        rng = track.len or 10  # avoid div0
+        slot = ux(.060)/ rng # 60%
+        print(rng,slot,track.pos,track.len)
+        marginx = ux(.020) # 20%
+        marginy = uy(.045) # 45%
+        pygame.draw.rect(screen,(10,10,10),( marginx-ux(10), marginy-uy(10), (rng*slot)+ux(20), uy(110) ) )
+        pygame.draw.rect(screen,(0,255,0), ( marginx, marginy, track.pos*slot, uy(90)) )
+        compose()
+        await asyncio.sleep(.1)
 
     # preloader will change dir and prepend it to sys.path
     platform.run_main(PyConfig, loaderhome= appdir / "assets", loadermain=None)
@@ -60,20 +116,21 @@ async def sitecustomize():
     while embed.counter()<0:
         await asyncio.sleep(.1)
 
+
     # test user media interaction
     print("""
-    * waiting for media user engagement, please click/touch page *
+    * Waiting for media user engagement : please click/touch page *
 """)
     while not platform.window.MM.UME:
         await asyncio.sleep(.1)
 
 
-    print("66: running main and resuming EventTarget in a few seconds")
+    print("105: running main and resuming EventTarget in a few seconds")
     execfile(appdir / "assets" / "main.py")
 
     # if you don't reach that step
     # your main.py has an infinite sync loop somewhere !
-    print("70: ready")
+    print("110: ready")
 
 
     # makes all queued events arrive after program has looped a few cycles
@@ -99,6 +156,7 @@ asyncio.run( sitecustomize() )
 config = {
     xtermjs : "{{cookiecutter.xtermjs}}" ,
     _sdl2 : "canvas",
+    user_canvas : 1,
     archive : "{{cookiecutter.archive}}",
     gui_debug : 3,
     cdn : "{{cookiecutter.cdn}}",
@@ -137,7 +195,22 @@ config = {
         div.thick_border { border: 4px solid black; }
 
         /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
-        canvas.emscripten { border: 0px none; background-color: black; }
+        canvas.emscripten {
+            border: 0px none;
+            background-color: transparent;
+            width: 100%;
+            height=100%;
+            z-index:10;
+
+            padding: 0;
+            margin: 0 auto;
+
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
 
         body {
             font-family: arial;
@@ -194,15 +267,17 @@ config = {
         </div>
     </div>
 
-    <div id=crt  class=topright >
 
-        <canvas class="emscripten" id="canvas"
+
+    <canvas class="emscripten" id="canvas"
 width="1px"
 height="1px"
-style="width: 100%; height=100%"
-        oncontextmenu="event.preventDefault()" tabindex=1>
-        </canvas>
+    oncontextmenu="event.preventDefault()" tabindex=1>
+    </canvas>
 
+    <div id=html></div>
+
+    <div id=crt  class=topright >
         <div id="system" hidden>
             <div class="button-container">
                 <button id="aiostop" disabled>AIO ⏏︎</button>
@@ -237,7 +312,7 @@ frameborder="1"
             scrolling="yes"
             allowfullscreen="true"
             webkitallowfullscreen="true"
-            allowtransparency="true">
+            allowtransparency="true" style="z-index: 20">
         </iframe>
         </div>
     </div>
@@ -261,13 +336,6 @@ frameborder="1"
         transfer.hidden = debug_hidden
         info.hidden = debug_hidden
         box.hidden =  debug_hidden
-/*
-        try {
-            iframe.hidden = debug_hidden
-        } catch (x) {
-            console.error(x)
-        }
-*/
     }
 
     function debug() {

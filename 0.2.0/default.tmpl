@@ -202,7 +202,7 @@ config = {
     <meta name="mobile-web-app-capable" content="yes">
 
     <link rel="icon" type="image/png" href="favicon.png" sizes="16x16">
-    <link rel="stylesheet" href="{{cookiecutter.cdn}}/styles.css"/>
+<!--    <link rel="stylesheet" href="{{cookiecutter.cdn}}/styles.css"/> -->
 
     <style>
         #status {
@@ -327,7 +327,7 @@ height="1px"
 
         </div>
 
-        <div id=box class="emscripten_border">
+        <div id=box class="emscripten_border" hidden=true>
             <div id="info" class="trinfo"></div>
 
         <iframe id="iframe" class="framed" name="iframe"
@@ -382,7 +382,7 @@ frameborder="1"
 
     function custom_postrun(){
         // python main and no VFS filesystem yet.
-        console.log(__FILE__, "custom_prerun")
+        console.log(__FILE__, "custom_postrun")
     }
 
     function info_online(url, data) {

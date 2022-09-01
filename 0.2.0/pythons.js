@@ -677,26 +677,26 @@ async function onload() {
     window.Module = vm
 
 
-    const nuadm = navigator.userAgentData.mobile || (window.top.location.hash.search("#debug-mobile")>=0)
+    const nuadm = mobile() || (window.top.location.hash.search("#debug-mobile")>=0)
 
 
     const debug_user = window.top.location.hash.search("#debug")>=0
-    const debug_dev = window.top.location.search.search("&-X")>=0
+    const debug_dev = vm.PyConfig.orig_argv.includes("-X dev") || vm.PyConfig.orig_argv.includes("-d")
     const debug_mobile = nuadm && ( debug_user || debug_dev )
     if ( debug_user || debug_dev || debug_mobile ) {
         debug_hidden = false;
+        vm.config.debug = true
         if ( is_iframe() ){
             vm.config.gui_divider = 3
         } else {
             vm.config.gui_divider ??= 2
         }
-        console.warn(`
+    }
+    console.warn(`
 
 == DEBUG user=${debug_user} dev=${debug_dev} mobile=${debug_mobile} ==
 
 `)
-    }
-
     if ( is_iframe() ) {
         console.warn("======= IFRAME =========")
     }
@@ -1307,7 +1307,9 @@ window.mobile_tablet = function() {
 window.mobile = () => {
     try {
         return navigator.userAgentData.mobile
-    } catch (x) {}
+    } catch (x) {
+        console.warn("unsupported", x)
+    }
 
     return mobile_check()
 }

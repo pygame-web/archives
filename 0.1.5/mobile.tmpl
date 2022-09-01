@@ -193,20 +193,6 @@ style="width: 100%; height=100%; visibility: hidden;"
 
         <div id=box class="emscripten_border">
             <div id="info" class="trinfo"></div>
-
-        <iframe id="iframe" class="framed" name="iframe"
-width="470px" height="90%"
-            sandbox="allow-same-origin allow-top-navigation allow-scripts allow-pointer-lock"
-            mozallowfullscreen="true"
-            allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated"
-            frameborder="0"
-            src="about://"
-            msallowfullscreen="true"
-            scrolling="yes"
-            allowfullscreen="true"
-            webkitallowfullscreen="true"
-            allowtransparency="true">
-        </iframe>
         </div>
     </div>
 
@@ -228,7 +214,6 @@ width="470px" height="90%"
         console.log(__FILE__, "custom_onload", "debug hide :",debug_hidden)
         pyconsole.hidden = debug_hidden
         system.hidden = debug_hidden
-        //iframe.hidden = debug_hidden
         transfer.hidden = debug_hidden
         info.hidden = debug_hidden
         box.hidden =  debug_hidden
@@ -266,7 +251,7 @@ width="470px" height="90%"
     function childLoaded() { ifram_dom = childGetElementById('someid');}
 
     function frame_online(url) {
-        window.frames["iframe"].location = url;
+        //window.frames["iframe"].location = url;
     }
     </script>
 

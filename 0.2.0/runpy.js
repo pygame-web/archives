@@ -676,20 +676,25 @@ async function onload() {
     // this is how emscripten "os layer" will find it
     window.Module = vm
 
-
-    // TODO:  -x
-    if ( window.top.location.hash.search("#debug")>=0) {
+    const debug_user = window.top.location.hash.search("#debug")>=0
+    const debug_dev = window.top.location.search.search("&-X")>=0
+    const debug_mobile = !navigator.userAgentData.mobile && ( debug_user || debug_dev )
+    if ( debug_user || debug_dev || debug_mobile ) {
         debug_hidden = false;
         if ( is_iframe() ){
             vm.config.gui_divider = 3
         } else {
             vm.config.gui_divider ??= 2
         }
-        console.warn("==================== DEBUG MODE ===============")
+        console.warn(`
+
+== DEBUG user=${debug_user} dev=${debug_dev} mobile=${debug_mobile} ==
+
+`)
     }
 
     if ( is_iframe() ) {
-        console.warn("==================== IFRAME ===================")
+        console.warn("======= IFRAME =========")
     }
 
 
@@ -726,26 +731,29 @@ async function onload() {
 
         // TERMINAL
 
-        if (feature.startsWith("vt")) {
+        if (!navigator.userAgentData.mobile || debug_mobile) {
+            if (feature.startsWith("vt")) {
 
-            // simpleterm.js
+                // simpleterm.js
 
-            if (feature === "vt") {
-                await feat_vt(debug_hidden)
+                if (feature === "vt") {
+                    await feat_vt(debug_hidden)
+
+                }
+
+                // xterm.js
+
+                if (feature === "vtx") {
+                    await feat_vtx(debug_hidden)
+                }
 
             }
-
-            // xterm.js
-
-            if (feature === "vtx") {
-                await feat_vtx(debug_hidden)
+            if (feature.startsWith("stdout")){
+                feat_stdout()
             }
 
-        }
-
-
-        if (feature.startsWith("stdout")){
-            feat_stdout()
+        } else {
+            console.warn("NO VT on mobile, use remote debugger or explicit flag")
         }
     }
 
@@ -1005,7 +1013,7 @@ __EMSCRIPTEN__.EventTarget.build('${ev.name}', """${ev.data}""")
 // =============================  media manager ===========================
 
 
-window.MM = { tracks : 0 }
+window.MM = { tracks : 0, UME : false }
 
 
 window.cross_dl = async function cross_dl(trackid, url, autoready) {
@@ -1095,12 +1103,29 @@ console.log("MM.cross_dl", trackid, transport, type, url )
 
 
         if (audio) {
+            track.media = audio
+
             track.set_volume = (v) => { track.media.volume = 0.0 + v }
             track.get_volume = () => { return track.media.volume }
-            track.media = audio
-            track.play = (v) => { track.loops = v; track.media.play() }
             track.stop = () => { track.media.pause() }
+
+            track.play = (v) => {
+                track.loops = v
+                const prom = track.media.play()
+                if (prom){
+                    prom.then(() => {
+                        // ME ok play started
+                        MM.UME = true
+                    }).catch(error => {
+                        // Media engagement required
+                        MM.UME = false
+                        console.error("** MEDIA PLAY ENGAGEMENT REQUIRED **")
+                    });
+                }
+            }
+
             MM_autoevents(track)
+
         }
 
 //console.log("MM.prepare", url,"queuing as",trackid)

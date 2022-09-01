@@ -501,39 +501,40 @@ if defined("embed") and hasattr(embed, "readline"):
     sys.excepthook = excepthook
 
 
+
 try:
     PyConfig
-    aio.cross.simulator = (
-        __EMSCRIPTEN__ or __wasi__ or __WASM__
-    ).PyConfig_InitPythonConfig(PyConfig)
+    aio.cross.simulator = False
+    print(sys._emscripten_info )
+#    aio.cross.simulator = (
+#        __EMSCRIPTEN__ or __wasi__ or __WASM__
+#    ).PyConfig_InitPythonConfig(PyConfig)
+
 # except NameError:
 except Exception as e:
     sys.print_exception(e)
     #   TODO: get a pyconfig from C here
-    #    <vstinner> pmp-p: JSON au C : connais les API secrète
-    # _PyConfig_FromDict(), _PyInterpreterState_SetConfig() et _testinternalcapi.set_config()?
-    #    <vstinner> pmp-p: j'utilise du JSON pour les tests unitaires sur PyConfig dans test_embed
 
     PyConfig = {}
-    print(" - running in simulator - ")
+    print(" - running in wasm simulator - ")
     aio.cross.simulator = True
+
 
 # make simulations same each time, easier to debug
 import random
 random.seed(1)
 
+
+
+
+
+
+
+
+
+
 if not aio.cross.simulator:
     import __EMSCRIPTEN__ as platform
-
-
-
-
-
-
-
-
-
-
 
 
     """
@@ -543,18 +544,6 @@ embed.preload("/usr/lib/python3.10/site-packages/numpy/core/_multiarray_umath.cp
 https://pypi.org/pypi/pygbag/0.1.3/json
 
 """
-
-
-
-
-
-
-
-
-
-
-
-
 
     class importer:
 

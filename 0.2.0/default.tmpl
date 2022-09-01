@@ -1,49 +1,92 @@
-<html lang="en-us"><script src="{{cookiecutter.cdn}}runpy.js?cpython3.11#" type=module id="main" data-src="vtx,fs,gui" async defer>#<!--
+<html lang="en-us"><script src="{{cookiecutter.cdn}}pythons.js?cpython3.11#" type=module id="main" data-src="vtx,fs,gui" async defer>#<!--
 
-import asyncio, platform, json
+import sys
+import asyncio
+import platform
+import json
 from pathlib import Path
 
 print("""
 Loading {{cookiecutter.title}} from {{cookiecutter.archive}}.apk
     Pygbag Version : {{cookiecutter.version}}
-    Template Version : 0.1.4
+    Template Version : 0.2.0
     CDN URL : {{cookiecutter.cdn}}
 
     Title   : {{cookiecutter.title}}
     Folder  : {{cookiecutter.directory}}
     Authors : {{cookiecutter.authors}}
     SPDX-License-Identifier: {{cookiecutter.spdx}}
+
 """)
 
-async def pygbag_loader():
-    global track
-    mount_point = Path("/data/data/{{cookiecutter.archive}}")
-    mount_point.mkdir()
+# don't rename
+async def sitecustomize():
+    import embed
+
+    print(json.dumps(PyConfig, sort_keys=True, indent=4))
+
+    apk = "{{cookiecutter.archive}}.apk"
+
+    bundle = "{{cookiecutter.archive}}"
+
+    # the C or js loader could do that but be explicit.
+    appdir = Path(f"/data/data/{bundle}") # /data/data/{{cookiecutter.archive}}
+
+    appdir.mkdir()
     cfg = {
         "io": "url",
         "type":"mount",
         "mount" : {
-            "point" : mount_point.as_posix(),
+            "point" : appdir.as_posix(),
             "path" : "/",
         }
 
     }
 
-    window.transfer.hidden = true
-
-    track = window.MM.prepare("{{cookiecutter.archive}}.apk", json.dumps(cfg))
+    track = platform.window.MM.prepare(apk, json.dumps(cfg))
 
     while not track.ready:
         await asyncio.sleep(0)
 
+    platform.window.transfer.hidden = true
+    platform.window.canvas.style.visibility = "visible"
 
-    os.chdir(mount_point / "assets")
-    sys.path.insert(0, os.getcwd() )
-
-    aio.defer( execfile , [ mount_point / "assets" / "main.py" ], {} )
+    # preloader will change dir and prepend it to sys.path
+    platform.run_main(PyConfig, loaderhome= appdir / "assets", loadermain=None)
 
 
-asyncio.run( pygbag_loader() )
+    # wait preloading complete
+    # that includes wasm compilation of bundled modules
+    while embed.counter()<0:
+        await asyncio.sleep(.1)
+
+    # test user media interaction
+    print("""
+    * waiting for media user engagement, please click/touch page *
+""")
+    while not platform.window.MM.UME:
+        await asyncio.sleep(.1)
+
+
+    print("66: running main and resuming EventTarget in a few seconds")
+    execfile(appdir / "assets" / "main.py")
+
+    # if you don't reach that step
+    # your main.py has an infinite sync loop somewhere !
+    print("70: ready")
+
+
+    # makes all queued events arrive after program has looped a few cycles
+    while not aio.run_called:
+        await asyncio.sleep(.1)
+
+    aio.create_task(platform.EventTarget.process())
+
+
+
+asyncio.run( sitecustomize() )
+
+
 
 # --></script><head><!--
 
@@ -188,8 +231,8 @@ width="470px" height="90%"
             sandbox="allow-same-origin allow-top-navigation allow-scripts allow-pointer-lock"
             mozallowfullscreen="true"
             allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated"
-            frameborder="0"
-            src="about://"
+frameborder="1"
+            src="{{cookiecutter.cdn}}empty.html"
             msallowfullscreen="true"
             scrolling="yes"
             allowfullscreen="true"
@@ -215,10 +258,16 @@ width="470px" height="90%"
         console.log(__FILE__, "custom_onload")
         pyconsole.hidden = debug_hidden
         system.hidden = debug_hidden
-        iframe.hidden = debug_hidden
         transfer.hidden = debug_hidden
         info.hidden = debug_hidden
         box.hidden =  debug_hidden
+/*
+        try {
+            iframe.hidden = debug_hidden
+        } catch (x) {
+            console.error(x)
+        }
+*/
     }
 
     function debug() {

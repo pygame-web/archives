@@ -24,7 +24,10 @@ async def sitecustomize():
     appname = apk.rsplit('.apk')[0]
 
     mount_point = Path(f"/data/data/{appname}")
-    mount_point.mkdir()
+    try:
+        mount_point.mkdir()
+    except:
+        pass
     cfg = {
         "io": "url",
         "type":"mount",

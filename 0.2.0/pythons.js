@@ -953,7 +953,8 @@ config.interactive = config.interactive || (location.search.search("-i")>=0) //?
             config.PYBUILD  = config.PYBUILD || vm.script.interpreter.substr(7) || "3.11" //??=
             config._sdl2    = config._sdl2 || "canvas" //??=
 
-            config.ume_block = config.ume_block || true //??=
+            if (config.ume_block === undefined)
+                config.ume_block || true //??=
 
             config.pydigits =  config.pydigits || config.PYBUILD.replace(".","") //??=
             config.executable = config.executable || `${config.cdn}python${config.pydigits}/main.js` //??=

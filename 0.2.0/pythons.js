@@ -809,7 +809,7 @@ async function onload() {
         window_resize(vm.config.gui_divider)
 
 
-console.log("cleanup while loading wasm", "has_parent?", is_iframe(), "Parent:", window.parent)
+// console.log("cleanup while loading wasm", "has_parent?", is_iframe(), "Parent:", window.parent)
     feat_snd = feat_gui = feat_fs = feat_vt = feat_vtx = feat_stdout = feat_lifecycle = onload = null
 
     if ( is_iframe() ) {

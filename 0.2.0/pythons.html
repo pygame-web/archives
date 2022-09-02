@@ -92,8 +92,9 @@ if sys.platform in ("emscripten","wasi",):
         slot = ux(.060)/rng # 60%
 
         async def compose(delay=0):
+            global screen
             pygame.display.update()
-            window.chromakey(None, *screen.get_colorkey(), 40)
+            platform.window.chromakey(None, *screen.get_colorkey(), 40)
             await asyncio.sleep(delay)
 
         for i in range(rng):

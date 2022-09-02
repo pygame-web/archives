@@ -28,6 +28,7 @@ function _until(fn_solver){
             {};
     }
 }
+window._until = _until
 
 function defined(e, o) {
     if (typeof o === 'undefined' || o === null)
@@ -40,7 +41,7 @@ function defined(e, o) {
         return false;
     return true;
 }
-
+window.defined = defined
 
 // promise to iterator converter
 var prom = {}
@@ -384,7 +385,7 @@ function feat_gui(debug_hidden) {
     var canvas = document.getElementById("canvas")
 
     if (!canvas) {
-        config.user_canvas ??= 0
+        config.user_canvas = config.user_canvas || 0 //??=
         canvas = document.createElement("canvas")
         canvas.id = "canvas"
         canvas.style.position = "absolute"
@@ -394,7 +395,7 @@ function feat_gui(debug_hidden) {
         var ctx = canvas.getContext("2d")
     } else {
         // user managed canvas
-        config.user_canvas ??= 1
+        config.user_canvas = config.user_canvas || 1
     }
 
     vm.canvas = canvas
@@ -427,7 +428,7 @@ function feat_gui(debug_hidden) {
         if (vm.config.debug) {
             divider = vm.config.gui_debug
         } else {
-            divider ??= vm.config.gui_divider || 1
+            divider = vm.config.gui_divider || 1
         }
 
 
@@ -594,6 +595,8 @@ async function feat_vt(debug_hidden) {
 
 }
 
+
+
 // xterm.js + sixel
 async function feat_vtx(debug_hidden) {
     var terminal = document.getElementById('terminal')
@@ -612,7 +615,7 @@ async function feat_vtx(debug_hidden) {
         //br()
     }
 
-    const { WasmTerminal } = await import("./vtx.js")
+    const { WasmTerminal } = await import("./vtx.js?256")
 
     vm.vt = new WasmTerminal("terminal", 132, 42, [
             { url : "./xtermjsixel/xterm-addon-image-worker.js", sixelSupport:true }
@@ -707,12 +710,12 @@ async function onload() {
         if ( is_iframe() ){
             vm.config.gui_divider = 3
         } else {
-            vm.config.gui_divider ??= 2
+            vm.config.gui_divider = vm.config.gui_divider || 2 //??=
         }
     }
     console.warn(`
 
-== DEBUG user=${debug_user} dev=${debug_dev} mobile=${debug_mobile} ==
+== DEBUG user=${debug_user} dev=${debug_dev} m=${debug_mobile} is_mobile(${nuadm}) ==
 
 `)
     if ( is_iframe() ) {
@@ -863,7 +866,7 @@ async function media_prepare(trackid) {
         // async
         MM[trackid].media = vm.BFS.Buffer.from( MM[trackid].data )
 
-        track.mount.path ??= '/'
+        track.mount.path = track.mount.path || '/' //??=
 
         const hint = `${track.mount.path}@${track.mount.point}:${trackid}`
 
@@ -934,27 +937,26 @@ console.warn("Passing hash as script+sys.argv", vm.sys_argv)
             }
 
 
-            config.cdn     ??= script.src.split(main,1)[0],
-            config.xtermjs ??= 0
+            config.cdn     = config.cdn || script.src.split(main,1)[0]  //??=
+            config.xtermjs = config.xtermjs || 0
 
-            //config.archive  ??= 0
-config.archive ??= (location.search.search(".apk")>=0)
+config.archive = config.archive || (location.search.search(".apk")>=0)  //??=
 
-            config.debug ??= (location.hash.search("#debug")>=0)
+            config.debug = config.debug || (location.hash.search("#debug")>=0) //??=
 // TODO debug should force -i or just display vt ?
-config.interactive ??= (location.search.search("-i")>=0)
+config.interactive = config.interactive || (location.search.search("-i")>=0) //??=
 
-            config.gui_debug ??= 2
+            config.gui_debug = config.gui_debug ||  2  //??=
 
-            config.autorun  ??= 0
-            config.features ??= script.dataset.src.split(","),
-            config.PYBUILD  ??= vm.script.interpreter.substr(7) || "3.11",
-            config._sdl2    ??= "canvas"
+            config.autorun  = config.autorun || 0 //??=
+            config.features = config.features || script.dataset.src.split(",") //??=
+            config.PYBUILD  = config.PYBUILD || vm.script.interpreter.substr(7) || "3.11" //??=
+            config._sdl2    = config._sdl2 || "canvas" //??=
 
-            config.ume_block ??= true
+            config.ume_block = config.ume_block || true //??=
 
-            config.pydigits ??= config.PYBUILD.replace(".","")
-            config.executable ??= `${config.cdn}python${config.pydigits}/main.js`
+            config.pydigits =  config.pydigits || config.PYBUILD.replace(".","") //??=
+            config.executable = config.executable || `${config.cdn}python${config.pydigits}/main.js` //??=
 
             // https://docs.python.org/3/c-api/init_config.html#initialization-with-pyconfig
 
@@ -1227,7 +1229,7 @@ MM.load = function load(trackid, loops) {
 // loops =0 play once, loops>0 play number of time, <0 loops forever
     const track = MM[trackid]
 
-    loops ??= 0
+    loops = loop || 0 //??=
     track.loops = loops
 
     if (!track.avail) {
@@ -1292,17 +1294,19 @@ if (navigator.connection) {
 
 
 window.chromakey = function(context, r,g,b, tolerance, alpha) {
-    context ??= canvas.getContext('2d');
-    r ??= data[0]
-    g ??= data[1]
-    b ??= data[2]
-    tolerance ??= 255;
-    tolerance -= 255
-    alpha ??=0
-
+    context = canvas.getContext('2d');
 
     var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
     var data = imageData.data;
+
+    r = r || data[0]
+    g = g || data[1]
+    b = b || data[2]
+    tolerance = tolerance || 255;
+    tolerance -= 255
+    alpha = alpha || 0
+
+
 
     for(var i = 0, n = data.length; i < n; i += 4) {
         var diff = Math.abs(data[i] - r) + Math.abs(data[i+1] - g) + Math.abs(data[i+2] - b);

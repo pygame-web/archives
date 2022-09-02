@@ -17,7 +17,7 @@ if (!window.Terminal) {
         xterm_cdn = window.Module.config.cdn+"xtermjsixel/"
         console.log("Terminal+ImageAddon importing from CDN :", xterm_cdn)
     } else {
-        xterm_cdn ??= "https://pygame-web.github.io/archives/0.2.0/xtermjsixel/"
+        xterm_cdn = xterm_cdn || "https://pygame-web.github.io/archives/0.2.0/xtermjsixel/"
         console.warn("Terminal+ImageAddon importing from fallback ", xterm_cdn)
     }
 

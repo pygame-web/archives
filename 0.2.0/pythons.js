@@ -668,7 +668,12 @@ function feat_lifecycle() {
 
 }
 
-
+function feat_snd() {
+    // to set user media engagement status and possibly make it blocking
+    MM.UME = !vm.config.ume_block
+    if (!MM.UME)
+        MM_play( {auto:1, test:1, media: new Audio(config.cdn+"empty.ogg")} , 1)
+}
 
 async function onload() {
     var debug_hidden = true;
@@ -679,8 +684,13 @@ async function onload() {
 
     const nuadm = mobile() || (window.top.location.hash.search("#debug-mobile")>=0)
 
-
-    const debug_user = window.top.location.hash.search("#debug")>=0
+    var debug_user
+    try {
+        // not always accessible on cross-origin object
+        debug_user = window.top.location.hash.search("#debug")>=0
+    } catch (x) {
+        debug_user = false
+    }
     const debug_dev = vm.PyConfig.orig_argv.includes("-X dev") || vm.PyConfig.orig_argv.includes("-d")
     const debug_mobile = nuadm && ( debug_user || debug_dev )
     if ( debug_user || debug_dev || debug_mobile ) {
@@ -719,6 +729,11 @@ async function onload() {
     var has_vt = false
 
     for (const feature of vm.config.features) {
+
+        if (feature.startsWith("snd")) {
+            feat_snd(debug_hidden)
+        }
+
 
 
         if (feature.startsWith("gui")) {
@@ -784,7 +799,7 @@ async function onload() {
 
 
 console.log("cleanup while loading wasm", "has_parent?", is_iframe(), "Parent:", window.parent)
-    feat_gui = feat_fs = feat_vt = feat_vtx = feat_stdout = feat_lifecycle = onload = null
+    feat_snd = feat_gui = feat_fs = feat_vt = feat_vtx = feat_stdout = feat_lifecycle = onload = null
 
     if ( is_iframe() ) {
         try {
@@ -928,6 +943,8 @@ config.interactive ??= (location.search.search("-i")>=0)
             config.PYBUILD  ??= vm.script.interpreter.substr(7) || "3.11",
             config._sdl2    ??= "canvas"
 
+            config.ume_block ??= true
+
             config.pydigits ??= config.PYBUILD.replace(".","")
             config.executable ??= `${config.cdn}python${config.pydigits}/main.js`
 
@@ -1037,7 +1054,7 @@ __EMSCRIPTEN__.EventTarget.build('${ev.name}', """${ev.data}""")
 // =============================  media manager ===========================
 
 
-window.MM = { tracks : 0, UME : false }
+window.MM = { tracks : 0, UME : true }
 
 function MM_play(track, loops) {
     const media = track.media
@@ -1060,9 +1077,6 @@ function MM_play(track, loops) {
     }
 }
 
-
-// to set user media engagement status
-MM_play( {auto:1, test:1, media: new Audio(config.cdn+"empty.ogg")} , 1)
 
 
 function MM_autoevents(track) {

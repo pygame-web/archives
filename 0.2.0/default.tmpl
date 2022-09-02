@@ -1,4 +1,4 @@
-<html lang="en-us"><script src="{{cookiecutter.cdn}}pythons.js?cpython3.11#" type=module id="main" data-src="vtx,fs,gui" async defer>#<!--
+<html lang="en-us"><script src="{{cookiecutter.cdn}}pythons.js?cpython3.11#" type=module id="main" data-src="vtx,fs,snd,gui" async defer>#<!--
 
 import sys
 import asyncio
@@ -74,7 +74,6 @@ async def sitecustomize():
     platform.window.canvas.style.visibility = "visible"
 
 
-    #print(json.dumps(PyConfig, sort_keys=True, indent=4))
 
     apk = "{{cookiecutter.archive}}.apk"
 
@@ -174,18 +173,54 @@ asyncio.run( sitecustomize() )
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+# BEGIN BLOCK
+#
+#
+#
+# now this is the html part you can (and should) customize
+# It is not mandatory : pygame-script when it reads the above code (firt line )
+# create absolute minimal widget set required for running with default rules
+#
+# do not alter that comment block it is separating python code from html code
+# =============================================================================
 # --></script><head><!--
+//=============================================================================
+//
+//
+//
+//
+//
+//
+//
 
     {%- if cookiecutter.comment != "" -%}
 {{cookiecutter.comment}}
     {% endif %}
 
 --><script type="application/javascript">
+// END BLOCK
+
+
+
+// this dict is available under PyConfig.config from __main__
 
 config = {
     xtermjs : "{{cookiecutter.xtermjs}}" ,
     _sdl2 : "canvas",
     user_canvas : 1,
+    ume_block : {{cookiecutter.ume_block}},
     archive : "{{cookiecutter.archive}}",
     gui_debug : 3,
     cdn : "{{cookiecutter.cdn}}",
@@ -202,7 +237,6 @@ config = {
     <meta name="mobile-web-app-capable" content="yes">
 
     <link rel="icon" type="image/png" href="favicon.png" sizes="16x16">
-<!--    <link rel="stylesheet" href="{{cookiecutter.cdn}}/styles.css"/> -->
 
     <style>
         #status {
@@ -224,6 +258,7 @@ config = {
         div.thick_border { border: 4px solid black; }
 
         /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+        /* average size of droid screen 470dp x 320dp  */
         canvas.emscripten {
             border: 0px none;
             background-color: transparent;
@@ -248,7 +283,6 @@ config = {
             background-color:powderblue;
         }
 
-        /* average size of droid screen 470dp x 320dp  */
         .topright{
            position:absolute;
            top:0px;
@@ -328,25 +362,25 @@ height="1px"
         </div>
 
         <div id=box class="emscripten_border" hidden=true>
+
             <div id="info" class="trinfo"></div>
 
-        <iframe id="iframe" class="framed" name="iframe"
+            <iframe id="iframe" class="framed" name="iframe"
 width="470px" height="90%"
-            sandbox="allow-same-origin allow-top-navigation allow-scripts allow-pointer-lock"
-            mozallowfullscreen="true"
-            allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated"
+                allowfullscreen="true"
+                webkitallowfullscreen="true"
+                msallowfullscreen="true"
+                mozallowfullscreen="true"
+                sandbox="allow-same-origin allow-top-navigation allow-scripts allow-pointer-lock"
+                allow="autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr; cross-origin-isolated"
 frameborder="1"
-            src="{{cookiecutter.cdn}}empty.html"
-            msallowfullscreen="true"
-            scrolling="yes"
-            allowfullscreen="true"
-            webkitallowfullscreen="true"
-            allowtransparency="true" style="z-index: 10">
-        </iframe>
+                src="{{cookiecutter.cdn}}empty.html"
+                scrolling="yes"
+                allowtransparency="true" style="z-index: 10">
+            </iframe>
         </div>
 
     </div>
-
 
 
     <div id="dlg" hidden>
@@ -355,12 +389,16 @@ frameborder="1"
     </div>
 
     <div id="pyconsole">
-        <div id="terminal" tabIndex=1 align="left"><p></div>
+        <div id="terminal" tabIndex=1 align="left"></div>
     </div>
 
     <script type="application/javascript">
-    function custom_onload(debug_hidden) {
+
+    async function custom_onload(debug_hidden) {
+        // this is called before anythinh python is loaded
+        // make your js customization here
         console.log(__FILE__, "custom_onload")
+
         pyconsole.hidden = debug_hidden
         system.hidden = debug_hidden
         transfer.hidden = debug_hidden
@@ -368,50 +406,48 @@ frameborder="1"
         box.hidden =  debug_hidden
     }
 
+    function custom_prerun(){
+        // no python main and no (MEMFS + VFS) yet.
+        console.log(__FILE__, "custom_prerun")
+
+    }
+
+    function custom_postrun(){
+        // python main and no VFS filesystem yet.
+        console.log(__FILE__, "custom_postrun")
+
+    }
+
     function debug() {
+        // allow to gain access to dev tools from js console
+        // but only on desktop. difficult to reach when in iframe
         python.config.debug = true
         custom_onload(false)
         Module.PyRun_SimpleString("shell.uptime()")
         window_resize()
     }
 
-    function custom_prerun(){
-        // no python main and no (MEMFS + VFS) yet.
-        console.log(__FILE__, "custom_prerun")
+    function info_inline(data){
+        document.getElementById("info").innerHTML = data
     }
 
-    function custom_postrun(){
-        // python main and no VFS filesystem yet.
-        console.log(__FILE__, "custom_postrun")
-    }
-
-    function info_online(url, data) {
+    function info_online(url) {
         // display info about current APK
         fetch( url /*, options */)
             .then((response) => response.text())
             .then((html) => {
-                document.getElementById("info").innerHTML = html || data;
+                info_inline(html);
         })
         .catch((error) => {
             console.warn(error);
         });
     }
 
-
-    function info_inline(data){
-        document.getElementById("info").innerHTML = data
-    }
-
-    var ifram_dom
-
-    function childLoaded() { ifram_dom = childGetElementById('someid');}
-
     function frame_online(url) {
         window.frames["iframe"].location = url;
     }
+
     </script>
-
-
 
 </body>
 </html>

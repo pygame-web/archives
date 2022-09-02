@@ -677,16 +677,23 @@ async function onload() {
     window.Module = vm
 
 
-    // TODO:  -x
-    if ( window.top.location.hash.search("#debug")>=0) {
-        debug_hidden = false;
-        if ( is_iframe() ){
-            vm.config.gui_divider = 3
-        } else {
-            vm.config.gui_divider ??= 2
+    try {
+        // not always accessible on cross-origin object
+        if ( window.top.location.hash.search("#debug")>=0) {
+            debug_hidden = false;
+            if ( is_iframe() ){
+                vm.config.gui_divider = 3
+            } else {
+                vm.config.gui_divider ??= 2
+            }
+            console.warn("==================== DEBUG MODE ===============")
         }
-        console.warn("==================== DEBUG MODE ===============")
+    } catch (x) {
+        debug_hidden = true;
     }
+
+
+
 
     if ( is_iframe() ) {
         console.warn("==================== IFRAME ===================")

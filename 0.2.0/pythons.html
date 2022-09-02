@@ -5,6 +5,7 @@ import asyncio
 from pathlib import Path
 
 
+
 # screen pixels (real, hardware)
 WIDTH=1024
 HEIGHT=600
@@ -37,8 +38,10 @@ def uy(*argv):
     return acc
 
 
-if sys.platform in ("emscripten",):
-    log =  window.console
+if sys.platform in ("emscripten","wasi",):
+
+
+    log =  platform.console
 
     try:
         platform.document.body.style.background = "#7f7f7f"
@@ -48,25 +51,63 @@ if sys.platform in ("emscripten",):
         screen.fill( (0,0,0,0) )
 
     except Exception as _:
+        pygame = False
         sys.print_exception(_)
         log.error("cannot load pygame and clear canvas")
 
 
-async def main():
-    global ctx
-    rng = 10 # resolution of progress bar
-    slot = ux(.060)/rng # 60%
-    for i in range(rng):
 
-        marginx = ux(.020) # 20%
-        marginy = uy(.045) # 45%
-        pygame.draw.rect(screen,(10,10,10),( marginx-ux(10), marginy-uy(10), (rng*slot)+ux(20), uy(110) ) )
-        pygame.draw.rect(screen,(0,255,0), ( marginx, marginy, (1+i)*slot, uy(90)) )
-        pygame.display.update()
-        window.chromakey(None, *screen.get_colorkey(), 40)
-        await asyncio.sleep(1)
 
-asyncio.run(main())
+    async def sitecustomize():
+        global PyConfig
+
+        # reset term
+        ESC("c")
+
+
+        from types import SimpleNamespace
+        print(json.dumps(PyConfig, sort_keys=True, indent=4))
+        PyConfig = SimpleNamespace(**PyConfig)
+
+
+
+
+
+
+
+        class VFS:
+            from pathlib import Path
+            script = Path(PyConfig.orig_argv[-1])
+            if script.suffix.lower() == ".py":
+                print("Loading:", script )
+
+
+
+
+
+        if not pygame:
+            return
+
+        rng = 10 # resolution of progress bar
+        slot = ux(.060)/rng # 60%
+
+        async def compose(delay=0):
+            pygame.display.update()
+            window.chromakey(None, *screen.get_colorkey(), 40)
+            await asyncio.sleep(delay)
+
+        for i in range(rng):
+            marginx = ux(.020) # 20%
+            marginy = uy(.045) # 45%
+            pygame.draw.rect(screen,(10,10,10),( marginx-ux(10), marginy-uy(10), (rng*slot)+ux(20), uy(110) ) )
+            pygame.draw.rect(screen,(0,255,0), ( marginx, marginy, (1+i)*slot, uy(90)) )
+            await compose(1)
+
+
+
+    asyncio.run(sitecustomize())
+
+
 
 
 

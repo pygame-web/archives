@@ -683,7 +683,7 @@ async function onload() {
     var debug_mobile_request
     try {
         debug_mobile_request = (window.top.location.hash.search("#debug-mobile")>=0)
-    } catch (x)
+    } catch (x) {
         console.warn("FIXME:", x )
         debug_mobile_request = false
     }

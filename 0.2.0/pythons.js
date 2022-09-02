@@ -680,17 +680,25 @@ async function onload() {
 
     // this is how emscripten "os layer" will find it
     window.Module = vm
+    var debug_mobile_request
+    try {
+        debug_mobile_request = (window.top.location.hash.search("#debug-mobile")>=0)
+    } catch (x)
+        console.warn("FIXME:", x )
+        debug_mobile_request = false
+    }
 
-
-    const nuadm = mobile() || (window.top.location.hash.search("#debug-mobile")>=0)
+    const nuadm = mobile() || debug_mobile_request
 
     var debug_user
     try {
         // not always accessible on cross-origin object
         debug_user = window.top.location.hash.search("#debug")>=0
     } catch (x) {
+        console.warn("FIXME:", x )
         debug_user = false
     }
+
     const debug_dev = vm.PyConfig.orig_argv.includes("-X dev") || vm.PyConfig.orig_argv.includes("-d")
     const debug_mobile = nuadm && ( debug_user || debug_dev )
     if ( debug_user || debug_dev || debug_mobile ) {

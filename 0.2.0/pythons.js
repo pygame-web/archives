@@ -615,7 +615,7 @@ async function feat_vtx(debug_hidden) {
         //br()
     }
 
-    const { WasmTerminal } = await import("./vtx.js?256")
+    const { WasmTerminal } = await import("./vtx.js")
 
     vm.vt = new WasmTerminal("terminal", 132, 42, [
             { url : "./xtermjsixel/xterm-addon-image-worker.js", sixelSupport:true }
@@ -1230,7 +1230,7 @@ MM.load = function load(trackid, loops) {
 // loops =0 play once, loops>0 play number of time, <0 loops forever
     const track = MM[trackid]
 
-    loops = loop || 0 //??=
+    loops = loops || 0 //??=
     track.loops = loops
 
     if (!track.avail) {

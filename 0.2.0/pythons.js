@@ -817,7 +817,7 @@ async function onload() {
             if (window.top.blanker)
                 window.top.blanker.style.visibility = "hidden"
         } catch (x) {
-            console.error(x)
+            console.error("FIXME:", x)
         }
     }
 
@@ -1335,7 +1335,7 @@ window.mobile = () => {
     try {
         return navigator.userAgentData.mobile
     } catch (x) {
-        console.warn("unsupported", x)
+        console.warn("FIXME:", x)
     }
 
     return mobile_check()

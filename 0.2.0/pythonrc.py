@@ -595,7 +595,7 @@ https://pypi.org/pypi/pygbag/0.1.3/json
                 dl_cdn = cdn
                 repodata = "pip.json"
             else:
-                cdn = Path("https://pygame-web.github.io/archives/0.2.0")
+                cdn = Path("https://pygame-web.github.io/archives/0.3.0")
                 dl_cdn = Path("https://cdn.jsdelivr.net/pyodide/v0.20.0/full")
                 repodata = "packages.json"
         else:

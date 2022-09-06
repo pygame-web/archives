@@ -55,7 +55,7 @@ try:
 except:
 
     def execfile(filename):
-        global pgzrun
+        global pgzrun, PyConfig
 
         imports = []
 
@@ -70,6 +70,7 @@ except:
                 if not current:
                     if l.startswith('<html'):
                         l = '#' + l.rsplit('>#',1)[-1]
+                        PyConfig["interactive"] = 1
                 else:
                     if pgzrun is None:
                         pgzrun = l.find("pgzrun") > 0
@@ -918,6 +919,7 @@ def CSR(*argv):
         ESC("[", arg)
 
 pgzrun = None
+is_script = False
 
 if os.path.isfile('/data/data/usersite.py'):
     execfile('/data/data/usersite.py')

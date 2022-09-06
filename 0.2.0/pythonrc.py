@@ -55,7 +55,7 @@ try:
 except:
 
     def execfile(filename):
-        global pgzrun
+        global pgzrun, PyConfig
 
         imports = []
 
@@ -66,28 +66,33 @@ except:
 
             pgzrun = None
 
-            for l in f.readlines():
-                if pgzrun is None:
-                    pgzrun = l.find("pgzrun") > 0
+            for (current,l) in enumerate(f.readlines()):
+                if not current:
+                    if l.startswith('<html'):
+                        l = '#' + l.rsplit('>#',1)[-1]
+                        PyConfig["interactive"] = 1
+                else:
+                    if pgzrun is None:
+                        pgzrun = l.find("pgzrun") > 0
 
-                testline = l.split("#")[0].strip(" \r\n,\t")
+                    testline = l.split("#")[0].strip(" \r\n,\t")
 
-                if testline.startswith("global ") and (
-                    testline.endswith(" setup")
-                    or testline.endswith(" loop")
-                    or testline.endswith(" main")
-                ):
-                    tmpl.append([len(__prepro), l.find("g")])
-                    __prepro.append("#globals")
-                    continue
+                    if testline.startswith("global ") and (
+                        testline.endswith(" setup")
+                        or testline.endswith(" loop")
+                        or testline.endswith(" main")
+                    ):
+                        tmpl.append([len(__prepro), l.find("g")])
+                        __prepro.append("#globals")
+                        continue
 
-                elif testline.startswith("import "):
-                    testline = testline.replace("import ", "").strip()
-                    imports.extend(map(str.strip, testline.split(",")))
+                    elif testline.startswith("import "):
+                        testline = testline.replace("import ", "").strip()
+                        imports.extend(map(str.strip, testline.split(",")))
 
-                elif testline.startswith("from "):
-                    testline = testline.replace("from ", "").strip()
-                    imports.append(testline.split(" import ")[0].strip())
+                    elif testline.startswith("from "):
+                        testline = testline.replace("from ", "").strip()
+                        imports.append(testline.split(" import ")[0].strip())
 
                 __prepro.append(l)
 
@@ -914,6 +919,7 @@ def CSR(*argv):
         ESC("[", arg)
 
 pgzrun = None
+is_script = False
 
 if os.path.isfile('/data/data/usersite.py'):
     execfile('/data/data/usersite.py')

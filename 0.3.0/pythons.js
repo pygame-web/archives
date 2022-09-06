@@ -376,7 +376,7 @@ async function custom_postrun() {
 
     if (await _rcp(vm.config.cdn + "pythonrc.py","/data/data/pythonrc.py")) {
 
-        vm.FS.writeFile( "/data/data/org.python/assets/main.py" , vm.script.main[0] )
+        vm.FS.writeFile( "/data/data/org.python/assets/main.py" , vm.script.blocks[0] )
 
         var runsite = `#!
 print(" ")
@@ -958,16 +958,21 @@ console.log("pythons found at", url , elems)
             }
 
 
+
             config.cdn     = config.cdn || script.src.split(main,1)[0]  //??=
             config.xtermjs = config.xtermjs || 0
 
 config.archive = config.archive || (location.search.search(".apk")>=0)  //??=
 
             config.debug = config.debug || (location.hash.search("#debug")>=0) //??=
-// TODO debug should force -i or just display vt ?
+
+//FIXME: debug should force -i or just display vt ?
 config.interactive = config.interactive || (location.search.search("-i")>=0) //??=
 
             config.gui_debug = config.gui_debug ||  2  //??=
+
+            if (script.id == "__main__")
+                config.autorun = 1
 
             config.autorun  = config.autorun || 0 //??=
             config.features = config.features || script.dataset.src.split(",") //??=
@@ -1042,7 +1047,14 @@ config.interactive = config.interactive || (location.search.search("-i")>=0) //?
             vm.config = config
 
 // TODO remote script
-            vm.script.main = [ code ]
+            if (config.autorun)
+                code = code + `
+if sys.platform in ('emscripten','wasi'):
+    embed.run()
+    embed.run()
+`
+
+            vm.script.blocks = [ code ]
 
 // TODO scripts argv ( sys.argv )
 
@@ -1055,7 +1067,7 @@ config.interactive = config.interactive || (location.search.search("-i")>=0) //?
 }
 
 for (const script of document.getElementsByTagName('script')) {
-    // process py-script brython whatever and push to vm.script.main
+    //TODO: process py-script brython whatever and push to vm.script.blocks
     // for concat with vm.FS.writeFile
 }
 

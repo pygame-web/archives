@@ -55,7 +55,7 @@ try:
 except:
 
     def execfile(filename):
-        global pgzrun, PyConfig
+        global pgzrun
 
         imports = []
 
@@ -66,33 +66,28 @@ except:
 
             pgzrun = None
 
-            for (current,l) in enumerate(f.readlines()):
-                if not current:
-                    if l.startswith('<html'):
-                        l = '#' + l.rsplit('>#',1)[-1]
-                        PyConfig["interactive"] = 1
-                else:
-                    if pgzrun is None:
-                        pgzrun = l.find("pgzrun") > 0
+            for l in f.readlines():
+                if pgzrun is None:
+                    pgzrun = l.find("pgzrun") > 0
 
-                    testline = l.split("#")[0].strip(" \r\n,\t")
+                testline = l.split("#")[0].strip(" \r\n,\t")
 
-                    if testline.startswith("global ") and (
-                        testline.endswith(" setup")
-                        or testline.endswith(" loop")
-                        or testline.endswith(" main")
-                    ):
-                        tmpl.append([len(__prepro), l.find("g")])
-                        __prepro.append("#globals")
-                        continue
+                if testline.startswith("global ") and (
+                    testline.endswith(" setup")
+                    or testline.endswith(" loop")
+                    or testline.endswith(" main")
+                ):
+                    tmpl.append([len(__prepro), l.find("g")])
+                    __prepro.append("#globals")
+                    continue
 
-                    elif testline.startswith("import "):
-                        testline = testline.replace("import ", "").strip()
-                        imports.extend(map(str.strip, testline.split(",")))
+                elif testline.startswith("import "):
+                    testline = testline.replace("import ", "").strip()
+                    imports.extend(map(str.strip, testline.split(",")))
 
-                    elif testline.startswith("from "):
-                        testline = testline.replace("from ", "").strip()
-                        imports.append(testline.split(" import ")[0].strip())
+                elif testline.startswith("from "):
+                    testline = testline.replace("from ", "").strip()
+                    imports.append(testline.split(" import ")[0].strip())
 
                 __prepro.append(l)
 
@@ -212,40 +207,6 @@ if defined("embed") and hasattr(embed, "readline"):
             ROOT = f"/data/data/{sys.argv[0]}"
             HOME = f"/data/data/{sys.argv[0]}/assets"
 
-        # VT100 display
-        # ____________________________________
-
-        @classmethod
-        def ESC(cls, *argv):
-            """ sent vt ESC commands """
-            for arg in argv:
-                yield chr(0x1B)+arg
-
-        @classmethod
-        def CSR(cls, *argv):
-            """ send vt CSR commands """
-            for arg in argv:
-                cls.ESC("[", arg)
-
-        @classmethod
-        def reset(cls, *argv):
-            """ reset terminal """
-            yield shell.ESC("c")
-
-
-        # file transfer
-        # ____________________________________
-        @classmethod
-        def sb(cls, *argv):
-            for arg in argv:
-                platform.window.MM.download(arg)
-                yield f"file {arg} sent"
-
-
-
-        # ____________________________________
-
-
         @classmethod
         def cat(cls, *argv):
             """ dump binary file content """
@@ -268,9 +229,6 @@ if defined("embed") and hasattr(embed, "readline"):
                 if isinstance(obj, platform.Object_type):
                     obj = json.loads( platform.window.JSON.stringify(obj) )
                 yield json.dumps(obj, sort_keys=True, indent=4)
-
-
-
 
 
         @classmethod
@@ -411,7 +369,7 @@ if defined("embed") and hasattr(embed, "readline"):
         def debug(cls, *argv, **env):
             try:
                 platform.window.debug()
-                yield f"debug mode : on, canvas divider {platform.window.python.config.gui_debug}"
+                yield f"debug mode : on, canvas divider {window.python.config.gui_debug}"
             except:
                 pass
 
@@ -492,9 +450,9 @@ ________________________
                         if not (aio.ticks % 60):
                             avg =  sum(ft) / len(ft)
                             try:
-                                platform.window.load_avg.innerText = '{:.4f}'.format(avg)
-                                platform.window.load_min.innerText = '{:.4f}'.format(min(ft))
-                                platform.window.load_max.innerText = '{:.4f}'.format(max(ft))
+                                window.load_avg.innerText = '{:.4f}'.format(avg)
+                                window.load_min.innerText = '{:.4f}'.format(min(ft))
+                                window.load_max.innerText = '{:.4f}'.format(max(ft))
                             except:
                                 pdb("366:uptime: window.load_* widgets not found")
                                 break
@@ -583,6 +541,9 @@ try:
     PyConfig
     aio.cross.simulator = False
     print(sys._emscripten_info )
+#    aio.cross.simulator = (
+#        __EMSCRIPTEN__ or __wasi__ or __WASM__
+#    ).PyConfig_InitPythonConfig(PyConfig)
 
 # except NameError:
 except Exception as e:
@@ -608,13 +569,14 @@ random.seed(1)
 
 
 if not aio.cross.simulator:
-    platform = __import__("__EMSCRIPTEN__")
+    import __EMSCRIPTEN__ as platform
+
 
     """
-https://pypi.org/pypi/pygbag/0.2.0/json
 
-https://pypi.org/simple/pygbag/
+embed.preload("/usr/lib/python3.10/site-packages/numpy/core/_multiarray_umath.cpython-310-wasm32-emscripten.so")
 
+https://pypi.org/pypi/pygbag/0.1.3/json
 
 """
 
@@ -633,7 +595,7 @@ https://pypi.org/simple/pygbag/
                 dl_cdn = cdn
                 repodata = "pip.json"
             else:
-                cdn = Path("https://pygame-web.github.io/archives/0.3.0")
+                cdn = Path("https://pygame-web.github.io/archives/0.2.0")
                 dl_cdn = Path("https://cdn.jsdelivr.net/pyodide/v0.20.0/full")
                 repodata = "packages.json"
         else:
@@ -645,7 +607,10 @@ https://pypi.org/simple/pygbag/
 
         @classmethod
         def code_imports(cls, code=''):
+
+            import platform
             import json
+
 
             def scan_imports(code, filename):
                 nonlocal cls
@@ -863,6 +828,7 @@ https://pypi.org/simple/pygbag/
                 self.tmpfile = None
 
             async def __aenter__(self):
+                import platform
                 print(f'572: Download start: "{self.url}"')
                 if "b" in self.mode:
                     self.__class__.ticks += 1
@@ -921,7 +887,7 @@ https://pypi.org/simple/pygbag/
         async def jsprom(prom):
             mark = None
             value = undefined
-            wit = platform.window.iterator( prom )
+            wit = window.iterator( prom )
             while mark!=undefined:
                 value = mark
                 await aio.sleep(0)
@@ -937,15 +903,21 @@ else:
 
 # ======================================================
 
+def ESC(*argv):
+    for arg in argv:
+        sys.__stdout__.write(chr(0x1B))
+        sys.__stdout__.write(arg)
+
+
+def CSR(*argv):
+    for arg in argv:
+        ESC("[", arg)
 
 pgzrun = None
-is_script = False
 
 if os.path.isfile('/data/data/usersite.py'):
     execfile('/data/data/usersite.py')
 
-import platform
-import asyncio
 import aio.recycle
 # ============================================================
 # DO NOT ADD ANYTHING FROM HERE OR APP RECYCLING WILL TRASH IT

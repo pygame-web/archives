@@ -1,0 +1,8 @@
+{
+    "-CDN-": "https://pygame-web.github.io/archives/repo/",
+    "Cython": "pkg/Cython-3.0.0a11-py2.py3-none-any.whl",
+    "cython": "pkg/Cython-3.0.0a11-py2.py3-none-any.whl",
+    "graphics": "vendor/graphics.py",
+    "pyximport": "pkg/Cython-3.0.0a11-py2.py3-none-any.whl",
+    "wasabigeom": "pkg/wasabi_geom-2.1.1-cp311-cp311-wasm32_tot_emscripten.whl"
+}

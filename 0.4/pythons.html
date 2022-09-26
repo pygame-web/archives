@@ -38,6 +38,15 @@ def uy(*argv):
     return acc
 
 
+
+from aio.toplevel import AsyncInteractiveConsole
+
+def importer(want, ex=None, resume=None):
+    print(f"{want=}, {resume=}, {ex=}")
+    return asyncio.sleep(0)
+
+
+
 if sys.platform in ("emscripten","wasi",):
 
     platform.window.python.is_ready = True
@@ -82,9 +91,11 @@ if sys.platform in ("emscripten","wasi",):
             print(index.read())
 
 
-        import aio.toplevel
-
-        await aio.toplevel.AsyncInteractiveConsole(globals(), shell=shell,).interact()
+        await AsyncInteractiveConsole(
+            globals(),
+            shell=shell,
+            importer=importer,
+        ).interact()
 
 
         if 1: #not pygame:

@@ -1273,7 +1273,6 @@ function MM_autoevents(track) {
         return
     }
 
-    media.MM_auto = 1
     media.addEventListener("canplaythrough", (event) => {
         track.ready = true
         if (track.auto)
@@ -1349,6 +1348,7 @@ MM.prepare = function prepare(url, cfg) {
                 "pos"   : 0,
                 "io"    : transport,
                 "ready" : undefined,
+                "auto"  : false,
                 "avail" : undefined,
                 "media" : undefined,
                 "data"  : undefined
@@ -1433,7 +1433,7 @@ MM.load = function load(trackid, loops) {
 
 
 MM.play = function play(trackid, loops, start, fade_ms) {
-//console.log("MM.play",trackid, loops, MM[trackid] )
+    console.log("MM.play",trackid, loops, MM[trackid] )
     const track = MM[trackid]
     track.loops = loops
     if (track.ready)
@@ -1451,8 +1451,8 @@ MM.play = function play(trackid, loops, start, fade_ms) {
     }
 }
 
-MM.stop = function stop(trackid) {
-//console.log("MM.stop", trackid, MM[trackid] )
+MM.pause = function pause(trackid) {
+    console.log("MM.pause", trackid, MM[trackid] )
     MM[trackid].media.pause()
 }
 

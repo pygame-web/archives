@@ -31,8 +31,8 @@ class MyHTTPRequestHandler(server.SimpleHTTPRequestHandler):
         super().end_headers()
 
     def send_my_headers(self):
-        self.send_header("Cross-Origin-Opener-Policy", "same-origin")
-        self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
+        self.send_header("Cross-Origin-Opener-Policy", "unsafe-none")
+        self.send_header("Cross-Origin-Embedder-Policy", "unsafe-none")
 
 
 server.test(HandlerClass=MyHTTPRequestHandler, protocol="HTTP/1.1", port=args.port)

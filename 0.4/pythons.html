@@ -72,22 +72,24 @@ if sys.platform in ("emscripten","wasi",):
         global PyConfig, con
 
         # reset term
-        # ESC("c")
+        ESC("c")
+
+        sys.argv = PyConfig.pop("argv", [])
 
 
         from types import SimpleNamespace
-        #print(json.dumps(PyConfig, sort_keys=True, indent=4))
+        print(json.dumps(PyConfig, sort_keys=True, indent=4))
         PyConfig = SimpleNamespace(**PyConfig)
 
 
         class VFS:
             from pathlib import Path
-            script = Path(PyConfig.orig_argv[-1])
+            script = Path(PyConfig.run_filename) # or sys.argv[0]
             if script.suffix.lower() == ".py":
                 print("Loading:", script )
 
 
-        async with fopen('/archives/repo/index.json', 'r') as index:
+        async with fopen('https://pygame-web.github.io/archives/repo/index.json', 'r') as index:
             print(index.read())
 
 

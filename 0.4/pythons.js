@@ -1573,7 +1573,36 @@ shell.uptime()
 }
 
 
-window.dltest = (file) => {
+async function sha256(message) {
+    // encode as UTF-8
+    const msgBuffer = new TextEncoder().encode(message);
+
+    // hash the message
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+
+    // convert ArrayBuffer to Array
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+    // convert bytes to hex string
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
+
+async function sha256b(msgBuffer) {
+
+    // hash the message
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+
+    // convert ArrayBuffer to Array
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+
+    // convert bytes to hex string
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
+
+
+async function dltest(file) {
     file = file || "/tmp/wasabigeom.cpython-311-wasm32-emscripten.so";
 
     function onerror() {
@@ -1583,11 +1612,17 @@ window.dltest = (file) => {
     function onload() {
         console.log("ok",file)
     }
+
+//9842bb7487f0cbf4908f893eef030a964b6bdc0edf39c0723bbb5d40343cb886
+
     var data = FS.analyzePath(file);
+
+    console.log( await sha256b(FS.readFile(file)) ) // data.object.contents ?.
+
     FS.createPreloadedFile(
       PATH.dirname(file),
       PATH.basename(file),
-      new Uint8Array(data.object.contents), true, true,
+      FS.readFile(file), true, true,
       () => {
         onload()
       },
@@ -1598,4 +1633,6 @@ window.dltest = (file) => {
     );
 
 }
+
+window.dltest = dltest
 

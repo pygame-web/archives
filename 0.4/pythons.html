@@ -173,7 +173,9 @@ if sys.platform in ("emscripten","wasi",):
 
         sys.argv = PyConfig.pop("argv", [])
 
-        PyConfig["dev_mode"] = 1
+        if window.location.href.find('localhost')>0:
+            PyConfig["dev_mode"] = 1
+
 
         from types import SimpleNamespace
 

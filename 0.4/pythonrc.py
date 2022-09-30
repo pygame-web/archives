@@ -278,10 +278,19 @@ if defined("embed") and hasattr(embed, "readline"):
         @classmethod
         def mkdir(cls, *argv):
             exist_ok = "-p" in argv
-            for arg in argv:
+            for arg in map(str, argv):
                 if arg == "-p":
                     continue
                 os.makedirs(arg, exist_ok=exist_ok)
+
+        @classmethod
+        def rx(cls, *argv, **env):
+            for arg in map(str, argv):
+                if arg.startswith("-"):
+                    continue
+                window.MM.download(arg)
+                yield f"file {arg} sent"
+            return True
 
         @classmethod
         def wget(cls, *argv, **env):
@@ -345,6 +354,32 @@ if defined("embed") and hasattr(embed, "readline"):
                     execfile(cmd)
                 return True
             return False
+
+        @classmethod
+        def umask(cls, *argv, **kw):
+            yield oct(os.umask(0))
+            return True
+
+        @classmethod
+        def chmod(cls, *argv, **kw):
+            def _current_umask() -> int:
+                mask = os.umask(0)
+                os.umask(mask)
+                return mask
+            for arg in argv:
+                if arg.startswith('-'):
+                    continue
+                mode = (0o777 & ~_current_umask() | 0o111)
+                print(f"{mode=}")
+                os.chmod(arg, mode)
+
+
+        @classmethod
+        def unzip(cls, *argv,**env):
+            import zipfile
+            for zip in argv:
+                with zipfile.ZipFile(zip,"r") as zip_ref:
+                    zip_ref.extractall(os.getcwd())
 
         @classmethod
         def install(cls, *argv, **env):

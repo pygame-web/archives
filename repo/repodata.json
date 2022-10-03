@@ -880,9 +880,9 @@
                 "kiwisolver",
                 "numpy",
                 "packaging",
-                "pillow",
+                "PIL",
                 "pyparsing",
-                "python-dateutil",
+                "dateutil",
                 "pytz",
                 "matplotlib-pyodide"
             ],

@@ -290,13 +290,16 @@ async function _rcp(url, store) {
         return false
     }
 
-    console.info(__FILE__,`rcp ${url} => ${store}`)
+    console.info(__FILE__,`rcp ${url} => ${store}`, content.status)
+
     if (content.ok) {
         const text= await content.text()
         await vm.FS.writeFile( store, text);
         return true;
     } else {
-        console.error(__FILE__,`can't rcp ${url} to ${store}`, content.status)
+        const text= await content.text()
+        console.error(__FILE__,`can't rcp ${url} to ${store}`, text.length)
+        await vm.FS.writeFile( store, text);
         return false
     }
 }

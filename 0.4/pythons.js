@@ -425,8 +425,13 @@ const vm = {
 
 async function custom_postrun() {
     console.warn("VM.postrun")
+    const pyrc = await _rcp(vm.config.cdn + "pythonrc.py","/data/data/org.python/assets/pythonrc.py")
 
-    if (await _rcp(vm.config.cdn + "pythonrc.py","/data/data/org.python/assets/pythonrc.py")) {
+    if (!pyrc)
+        console.warn("431 rcp failed?")
+
+    if (1)
+     {
 
         vm.FS.writeFile( "/data/data/org.python/assets/main.py" , vm.script.blocks[0] )
 

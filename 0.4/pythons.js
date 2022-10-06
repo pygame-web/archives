@@ -5,7 +5,7 @@ var config
 const FETCH_FLAGS = {
     mode:"no-cors",
     redirect: 'follow',
-    referrerPolicy: 'no-referrer',
+//    referrerPolicy: 'no-referrer', or HTTP error 0 on pythonrc.py
     credentials: 'omit'
 }
 

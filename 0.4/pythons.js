@@ -280,7 +280,7 @@ function prerun(VM) {
 async function _rcp(url, store) {
     var content
     try {
-        content = await fetch(url)
+        content = await fetch(url, {mode:"no-cors"})
     } catch (x) { return false }
 
     store = store || ( "/data/data/" + url )

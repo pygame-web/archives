@@ -1291,8 +1291,8 @@ function MM_autoevents(track) {
 }
 
 
-window.cross_dl = async function cross_dl(trackid, url, autoready) {
-    var response = await fetch(url, FETCH_FLAGS);
+window.cross_dl = async function cross_dl(trackid, url, flags) {
+    var response = await fetch(url, flags || FETCH_FLAGS);
 
     checkStatus(response)
 
@@ -1384,7 +1384,7 @@ MM.prepare = function prepare(url, cfg) {
             track.avail = true
         } else {
 console.log("MM.cross_dl", trackid, transport, type, url )
-            cross_dl(trackid, url)
+            cross_dl(trackid, url, {} )
         }
     }
 

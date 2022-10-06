@@ -276,33 +276,6 @@ function prerun(VM) {
     VM.FS.init(stdin, stdout, stderr);
 }
 
-/*
-async function _rcp(url, store) {
-    var content
-
-    store = store || ( "/data/data/" + url )
-
-
-    try {
-        content = await fetch(url, {})
-    } catch (x) {
-        console.error(__FILE__,`cannot rcp ${url} to ${store}`, x)
-        return false
-    }
-
-    console.info(__FILE__,`rcp ${url} => ${store}`, content.status)
-
-    if (content.ok) {
-        const text= await content.text()
-        await vm.FS.writeFile( store, text);
-        return true;
-    } else {
-        console.error(__FILE__,`cannot rcp ${url} to ${store}`)
-        return false
-    }
-}
-
-*/
 
 const vm = {
         APK : "org.python",
@@ -1320,6 +1293,8 @@ function MM_autoevents(track) {
 
 window.cross_dl = async function cross_dl(trackid, url, autoready) {
     var response = await fetch(url, FETCH_FLAGS);
+
+    checkStatus(response)
 
     const reader = response.body.getReader();
 

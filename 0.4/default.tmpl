@@ -98,8 +98,9 @@ async def sitecustomize():
             "point" : appdir.as_posix(),
             "path" : "/",
         }
-
+        "path" : f"/ => {appdir.as_posix()}",
     }
+
 
     track = platform.window.MM.prepare(apk, json.dumps(cfg))
 

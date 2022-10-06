@@ -736,7 +736,7 @@ async function feat_vtx(debug_hidden) {
     const { WasmTerminal } = await import("./vtx.js")
 
     vm.vt = new WasmTerminal("terminal", 132, 42, [
-            { url : "./xtermjsixel/xterm-addon-image-worker.js", sixelSupport:true }
+            { url : config.cdn+"xtermjsixel/xterm-addon-image-worker.js", sixelSupport:true }
     ] )
 }
 

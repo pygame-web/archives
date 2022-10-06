@@ -425,10 +425,15 @@ const vm = {
 
 async function custom_postrun() {
     console.warn("VM.postrun")
-    const pyrc = await _rcp(vm.config.cdn + "pythonrc.py","/data/data/org.python/assets/pythonrc.py")
+    const pyrc_url = vm.config.cdn + "pythonrc.py"
+    const pyrc_file = "/data/data/org.python/assets/pythonrc.py"
+    const pyrc = await _rcp(pyrc_url, pyrc_file)
 
-    if (!pyrc)
+    if (!pyrc) {
         console.warn("431 rcp failed?")
+        for (const yielded of  cross_dl(pyrc_url, pyrc_file)) {
+        }
+    }
 
     if (1)
      {

@@ -280,7 +280,7 @@ function prerun(VM) {
 async function _rcp(url, store) {
     var content
     try {
-        content = await fetch(url, FETCH_FLAGS)
+        content = await fetch(url, {})
     } catch (x) { return false }
 
     store = store || ( "/data/data/" + url )

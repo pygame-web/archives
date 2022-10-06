@@ -431,7 +431,7 @@ async function custom_postrun() {
 
     if (!pyrc) {
         console.warn("431 rcp failed?")
-        for (const yielded of  cross_dl(pyrc_url, pyrc_file)) {
+        for (const yielded of cross_file(pyrc_url, pyrc_file)) {
         }
     }
 

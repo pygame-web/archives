@@ -278,10 +278,9 @@ function prerun(VM) {
 
 
 async function _rcp(url, store) {
+    const store = store || ( "/data/data/" + url )
+
     var content
-
-    store = store || ( "/data/data/" + url )
-
     try {
         content = await fetch(url, {mode:"no-cors"})
     } catch (x) {
@@ -289,14 +288,13 @@ async function _rcp(url, store) {
         return false
     }
 
-
     console.info(__FILE__,`rcp ${url} => ${store}`)
     if (content.ok) {
         const text= await content.text()
         await vm.FS.writeFile( store, text);
         return true;
     } else {
-        console.error(__FILE__,`can't rcp ${url} to ${store}`)
+        console.error(__FILE__,`can't rcp ${url} to ${store}`, content.status)
         return false
     }
 }

@@ -671,16 +671,22 @@ if not aio.cross.simulator:
     if (__WASM__ and __EMSCRIPTEN__) or platform.is_browser:
         port = "443"
 
+        # pygbag mode
         if platform.window.location.href.find("localhost") > 0:
-            PyConfig.dev_mode = 1
-            print(sys._emscripten_info)
             port = str(platform.window.location.port)
 
-        if PyConfig.dev_mode > 0:  # and (port !="8666"):
+            # pygbag developer mode
+            if port == "8666":
+                PyConfig.dev_mode = 1
+            print(sys._emscripten_info)
+
+        if PyConfig.dev_mode > 0:
+            # in pygbag dev mode use local repo
             PyConfig.pkg_indexes = []
             for idx in PYCONFIG_PKG_INDEXES_DEV:
                 PyConfig.pkg_indexes.append(idx.replace("<port>", port))
         else:
+            # address cdn
             PyConfig.pkg_indexes = PYCONFIG_PKG_INDEXES
 
         from platform import window, document

@@ -210,6 +210,9 @@ async def sitecustomize():
 
     else:
         pdb(" -> won't run synchronous code with a pygame loop")
+        if await TopLevel_async_handler.async_imports("matplotlib"):
+            import matplotlib
+
         shell.debug()
 
 

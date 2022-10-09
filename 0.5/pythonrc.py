@@ -786,6 +786,7 @@ if not aio.cross.simulator:
     import zipfile
     import aio.toplevel
     import ast
+    from pathlib import Path
 
     class TopLevel_async_handler(aio.toplevel.AsyncInteractiveConsole):
 

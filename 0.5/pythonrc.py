@@ -999,7 +999,7 @@ if not aio.cross.simulator:
                     pkg_file = f"/tmp/{repo[want].rsplit('/',1)[-1]}"
 
                     cfg = {"io": "url", "type": "fs", "path": pkg_file}
-                    print("pkg :", pkg_url, "\n\t=>", pkg_file)
+                    print("pkg :", pkg_url)
 
                     track = platform.window.MM.prepare(pkg_url, json.dumps(cfg))
 

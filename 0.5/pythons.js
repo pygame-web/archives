@@ -111,7 +111,7 @@ window.iterator = function * iterator(oprom) {
 }
 
 
-function checkStatus(response) {
+window.checkStatus = function checkStatus(response) {
     if (!response.ok) {
         response.error =  new Error(`HTTP ${response.status} - ${response.statusText}`);
         return null
@@ -133,18 +133,16 @@ window.cross_file = function * cross_file(url, store) {
     console.log("cross_file.fetch", url )
     fetch(url, FETCH_FLAGS)
         .then( response => {
-                if (response)
+                if (checkStatus(response))
                     response.arrayBuffer()
-                else
-                    content = "error"
             })
         .then( buffer => content = new Uint8Array(buffer) )
-        .catch(x => console.error("cross_file :",x))
+        .catch(x => response.error = new Error(x) )
 
-    while (!content)
+    while (!content && !response.error)
         yield content
 
-    if ( content == "error" )
+    if (response.error)
         return response.error
 
     FS.writeFile(store, content )
@@ -299,6 +297,8 @@ const vm = {
 
         arguments: [],
 
+        rpc_path : [],
+
         cpy_argv : [],
         sys_argv : [],
 
@@ -407,6 +407,7 @@ const vm = {
         preRun : [ prerun ],
         postRun : [ function (VM) {
             window.python = VM
+            window.py = new bridge(VM)
             setTimeout(custom_postrun, 10)
         } ]
 }
@@ -419,26 +420,34 @@ function run_pyrc(content) {
     vm.FS.writeFile( "/data/data/org.python/assets/main.py" , vm.script.blocks[0] )
 
     python.PyRun_SimpleString(`#!site
-print(" ")
-print("* site.py from pythons.js *")
-import os, sys, json
 PyConfig = json.loads("""${JSON.stringify(python.PyConfig)}""")
+verbose = PyConfig.get('quiet', False)
+if verbose:
+    print(" ")
+    print("* site.py from pythons.js *")
+
+import os, sys, json
+
 
 if os.path.isdir(PyConfig['prefix']):
     sys.path.append(PyConfig['prefix'])
     os.chdir(PyConfig['prefix'])
 
-for what,fn in (
-        ["pythonrc", "${pyrc_file}"],
-        ["pythonstartup/usersite", "/data/data/org.python/assets/main.py"],
-    ):
-    print(" ")
-    print(f"* {what} from {fn} *")
-    if os.path.isfile(fn):
-        exec(open(fn).read(), globals(), globals())
-    else:
-        print(fn,"not found")
-print("* site.py done *")
+fn = "${pyrc_file}"
+
+if os.path.isfile(fn):
+    exec(open(fn).read(), globals(), globals())
+    if verbose:
+        print("* site.py done *")
+    def async_exec(filename):
+        exec(open(filename).read(), globals(), globals())
+        import asyncio
+        async def sitecustomize():
+            aio.create_task(platform.EventTarget.process())
+        asyncio.run( sitecustomize() )
+    async_exec("/data/data/org.python/assets/main.py")
+else:
+    print(fn,"not found")
 #
 `)
 }
@@ -916,6 +925,7 @@ async function onload() {
             if (feature.startsWith("stdout")){
                 feat_stdout()
                 has_vt = true
+                config.quiet = true
             }
 
         } else {
@@ -935,8 +945,8 @@ async function onload() {
 
 
     window.busy--;
-
-    vm.vt.xterm.write('OK\r\nPlease \x1B[1;3;31mwait\x1B[0m ...\r\n')
+    if (!config.quiet)
+        vm.vt.xterm.write('OK\r\nPlease \x1B[1;3;31mwait\x1B[0m ...\r\n')
 
 
 
@@ -1074,6 +1084,7 @@ config.interactive = config.interactive || (location.search.search("-i")>=0) //?
             if (script.id == "__main__")
                 config.autorun = 1
 
+            config.quiet = false
             config.can_close = config.can_close || 0
             config.autorun  = config.autorun || 0 //??=
             config.features = config.features || script.dataset.src.split(",") //??=
@@ -1601,5 +1612,41 @@ shell.uptime()
 }
 
 
+// TODO: revoke url
+window.blob = function blob(filename) {
+    return URL.createObjectURL( new Blob([FS.readFile(filename)]))
+}
+
+/*
+function rpc_handler(emsg, url, line) {
+    if ( (line == 1) && (emsg.search(': py.')>0)){
+        console.log('msg', emsg, 'url', url, 'line', line)
+        return true
+    }
+    return false
+}
+
+window.addEventListener("error", rpc_handler )
+*/
+
+function bridge(target) {
+    const pybr = new Proxy(function () {}, {
+    get(_, k, receiver) {
+        python.rpc_path.push(k)
+        return pybr
+    },
+    apply(_, o, argv) {
+        const method = python.rpc_path.join(".")
+        if (target === window.python)
+            queue_event("rpc",{ "method": method, "argv" : argv})
+        else {
+            console.error("unsupported target", target)
+        }
+        python.rpc_path.length=0
+    }
+  });
+
+  return pybr
+}
 
 

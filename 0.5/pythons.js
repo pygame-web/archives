@@ -297,8 +297,6 @@ const vm = {
 
         arguments: [],
 
-        rpc_path : [],
-
         cpy_argv : [],
         sys_argv : [],
 
@@ -859,7 +857,10 @@ async function onload() {
     }
     console.warn(`
 
-== DEBUG user=${debug_user} dev=${debug_dev} m=${debug_mobile} is_mobile(${nuadm}) ==
+
+== FLAGS : is_mobile(${nuadm}) dev=${debug_dev} debug_user=${debug_user} debug_mobile=${debug_mobile} ==
+
+
 
 `)
     if ( is_iframe() ) {
@@ -1599,7 +1600,7 @@ window.debug = function () {
         window.custom_onload(debug_hidden)
 
     } catch (x) {
-        console.warn("custom_onload failed : ", x)
+        console.error("using debug UI default, because no custom_onload or failure")
         for (const e of ["pyconsole","system","iframe","transfer","info","box","terminal"] ) {
             if (window[e])
                 window[e].hidden = debug_hidden
@@ -1612,8 +1613,8 @@ shell.uptime()
 }
 
 
-// TODO: revoke url
 window.blob = function blob(filename) {
+    console.warn(__FILE__, "1620: TODO: revoke blob url")
     return URL.createObjectURL( new Blob([FS.readFile(filename)]))
 }
 
@@ -1629,24 +1630,102 @@ function rpc_handler(emsg, url, line) {
 window.addEventListener("error", rpc_handler )
 */
 
-function bridge(target) {
+window.rpc = { path : [], call : "", argv : [] }
+
+function bridge(host) {
     const pybr = new Proxy(function () {}, {
     get(_, k, receiver) {
-        python.rpc_path.push(k)
+        rpc.path.push(k)
         return pybr
     },
     apply(_, o, argv) {
-        const method = python.rpc_path.join(".")
-        if (target === window.python)
-            queue_event("rpc",{ "method": method, "argv" : argv})
-        else {
-            console.error("unsupported target", target)
+        const call = rpc.path.join(".")
+        if (host === window.python) {
+// TODO: rpc id / event serialisation
+            queue_event("rpc", { "call": call, "argv" : argv, "rpcid": window.event} )
+        } else {
+            window.rpc.call = call
+            window.rpc.argv = Array.from(argv)
+            if (!argv.length) {
+                console.error("event should always be first param")
+                window.rpc.argv.unshift(window.event)
+            } else if (argv.length>0 && (window.event!==argv[0])) {
+                console.error("event should always be first param")
+                window.rpc.argv.unshift(window.event)
+            }
+            host.click()
         }
-        python.rpc_path.length=0
+        rpc.path.length=0
     }
   });
-
   return pybr
 }
+
+
+
+
+window.Fetch = {}
+
+// generator functions for async fetch API
+// script is meant to be run at runtime in an emscripten environment
+
+// Fetch API allows data to be posted along with a POST request
+window.Fetch.POST = function * POST (url, data)
+{
+    // post info about the request
+    console.log("POST: " + url + "\nData: " + data);
+    var request = new Request(url, {method: 'POST', body: JSON.stringify(data)})
+    var content = 'undefined';
+    fetch(request)
+   .then(resp => resp.text())
+   .then((resp) => {
+        console.log(resp);
+        content = resp;
+   })
+   .catch(err => {
+         // handle errors
+         console.log("An Error Occurred:")
+         console.log(err);
+    });
+
+    while(content == 'undefined'){
+        yield content;
+    }
+}
+
+// Only URL to be passed
+// when called from python code, use urllib.parse.urlencode to get the query string
+window.Fetch.GET = function * GET (url)
+{
+    console.log("GET: " + url);
+    var request = new Request(url, { method: 'GET' })
+    var content = 'undefined';
+    fetch(request)
+   .then(resp => resp.text())
+   .then((resp) => {
+        console.log(resp);
+        content = resp;
+   })
+   .catch(err => {
+         // handle errors
+         console.log("An Error Occurred:");
+         console.log(err);
+    });
+
+    while(content == 'undefined'){
+        // generator
+        yield content;
+    }
+}
+
+
+
+
+
+
+
+
+
+
 
 

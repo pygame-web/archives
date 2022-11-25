@@ -7,17 +7,8 @@ from pathlib import Path
 from zipfile import ZipFile
 
 
-"""
-
-embed.preload("/usr/lib/python3.10/site-packages/numpy/core/_multiarray_umath.cpython-310-wasm32-emscripten.so")
-
-https://pypi.org/pypi/pygbag/0.1.3/json
-
-"""
-
-base="https://cdn.jsdelivr.net/pyodide/dev/full/"
-
 if 0:
+    base="https://cdn.jsdelivr.net/pyodide/dev/full/"
     os.system(f"mv  repodata.json repodata.old;wget {base}repodata.json")
 
     pyo = json.loads(open("repodata.json").read())
@@ -35,8 +26,9 @@ if 0:
 
 for whl in Path(".").glob("*.whl"):
     print()
-
-    norm = whl.stem.replace("emscripten_3_1_21_wasm32", "wasm32_mvp_emscripten")
+    norm = whl.stem
+    for ver in ["emscripten_3_1_21_wasm32","emscripten_3_1_25_wasm32"]:
+        norm = norm.replace(ver, "wasm32_mvp_emscripten")
     print(whl.stem,"->",norm)
     os.system(f"""
 

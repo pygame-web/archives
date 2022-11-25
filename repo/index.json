@@ -66,6 +66,7 @@
     "graphics": "vendor/graphics.py",
     "gsw": "pkg/gsw-3.4.0-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "h5py": "pkg/h5py-3.7.0-<abi>-<abi>-wasm32_mvp_emscripten.whl",
+    "harfang": "pkg/harfang-3.2.4-cp32-abi3-wasm32_mvp_emscripten.whl",
     "htag": "pkg/htag-0.8.8-py3-none-any.whl",
     "htbulma": "pkg/htbulma-0.8.1-py3-none-any.whl",
     "html5lib": "pkg/bleach-5.0.0-py3-none-any.whl",

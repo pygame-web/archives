@@ -120,6 +120,7 @@
     "pyclipper": "pkg/pyclipper-1.3.0.post3-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "pycparser": "pkg/pycparser-2.21-py2.py3-none-any.whl",
     "pydantic": "pkg/pydantic-1.9.1-<abi>-<abi>-wasm32_mvp_emscripten.whl",
+    "pygame.base": "pkg/pygame_static-1.0-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "pygame_matplotlib": "pkg/pygame_matplotlib-0.2.1-py3-none-any.whl",
     "pygments": "pkg/Pygments-2.12.0-py3-none-any.whl",
     "pylab": "pkg/matplotlib-3.5.2-<abi>-<abi>-wasm32_mvp_emscripten.whl",

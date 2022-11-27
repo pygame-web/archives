@@ -3,7 +3,7 @@
 whl=/data/git/archives/repo/pkg/$(basename $(pwd)).whl
 echo Normalizing to mvp : $whl
 
-for lib in $(find -type f |grep so$)
+for lib in $(find -type f |grep \\.so$)
 do
     if /opt/python-wasm-sdk/emsdk/upstream/bin/wasm-emscripten-finalize -mvp $lib -o /tmp/norm.so
     then

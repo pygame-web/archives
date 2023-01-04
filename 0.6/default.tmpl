@@ -164,7 +164,8 @@ async def custom_site():
         screen.blit(prompt, ( marginx+ ux(80), marginy - uy(10) ) )
         compose()
 
-    await shell.preload_file(main, callback=ui_callback)
+    #await shell.preload_file(main, callback=ui_callback)
+    #await shell.source(main, callback=ui_callback)
 
 
     # test/wait if user media interaction required
@@ -186,7 +187,7 @@ async def custom_site():
     screen.fill( (0,0,0,0) )
     pygame.display.flip()
 
-    await shell.source(main)
+    await shell.source(main, callback=ui_callback)
 
 
 
@@ -239,6 +240,7 @@ config = {
     xtermjs : "{{cookiecutter.xtermjs}}" ,
     _sdl2 : "canvas",
     user_canvas : 1,
+    user_canvas_managed : 0,
     ume_block : {{cookiecutter.ume_block}},
     can_close : {{cookiecutter.can_close}},
     archive : "{{cookiecutter.archive}}",

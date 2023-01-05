@@ -933,7 +933,7 @@ if not aio.cross.simulator:
             flags = {
                 'mode': "no-cors",
                 'redirect': 'follow',
-                'referrerPolicy': 'no-referrer',
+#                'referrerPolicy': 'no-referrer',
                 'credentials': 'omit'
             }
             def __init__(self, maybe_url, mode="r", flags=None):

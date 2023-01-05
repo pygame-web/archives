@@ -931,7 +931,7 @@ if not aio.cross.simulator:
         class fopen:
 
             flags = {
-                'mode': "no-cors",
+#                'mode': "no-cors",
                 'redirect': 'follow',
 #                'referrerPolicy': 'no-referrer',
                 'credentials': 'omit'

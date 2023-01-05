@@ -949,7 +949,7 @@ if not aio.cross.simulator:
 
 
 
-                if "b" in self.mode:
+                if ("b" in self.mode) or ('r' in self.mode):
                     self.tmpfile = shell.mktemp()
                     cf = platform.window.cross_file(self.url, self.tmpfile, self.flags)
                     content = await platform.jsiter(cf)
@@ -1361,7 +1361,8 @@ if not aio.cross.simulator:
                 print("1340:", repo)
                 async with fopen(f"{repo}index.json", "r") as index:
                     try:
-                        data = index.read().replace("<abi>", abitag)
+                        data = index.read().decode()
+                        data = data.replace("<abi>", abitag)
                         repo = json.loads(data)
                     except:
                         pdb(f"{repo}: malformed json index {data}")

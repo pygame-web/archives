@@ -485,15 +485,16 @@ pfx=PyConfig['prefix']
 if os.path.isdir(pfx):
     sys.path.append(pfx)
     os.chdir(pfx)
-__file__ = "${pyrc_file}"
-if os.path.isfile(__file__):
-    exec(open(__file__).read(), globals(), globals())
+__pythonrc__ = "${pyrc_file}"
+if os.path.isfile(__pythonrc__):
+
+    exec(open(__pythonrc__).read(), globals(), globals())
     import asyncio
-    async def custom_site():
+    async def import_site(__file__="${main_file}"):
         await TopLevel_async_handler.start_toplevel(platform.shell, console=True)
         tmpdir = Path(__import__("tempfile").gettempdir())
         os.chdir(tmpdir)
-        __file__ = "${main_file}"
+
         TopLevel_async_handler.muted = True
         await shell.source(__file__)
         if sys.argv[0].endswith('.py'):
@@ -502,32 +503,15 @@ if os.path.isfile(__file__):
             if not Path(__file__).is_file():
                 print("404: ",sys.argv)
             else:
-                await shell.source(__file__)
-    asyncio.run(custom_site())
-    del custom_site
+                await shell.runpy(__file__)
+    asyncio.run(import_site())
+    del import_site
+else:
+    print(f"510: invalid {__pythonrc__=}")
 del pfx, verbose
 #
 `)
 }
-
-
-
-/*
-if os.path.isfile(fn):
-    exec(open(fn).read(), globals(), globals())
-    if verbose:
-        print("* site.py done *")
-    def async_exec(filename):
-        exec(open(filename).read(), globals(), globals())
-        import asyncio
-        async def custom_site():
-            aio.create_task(platform.EventTarget.process())
-        asyncio.run( custom_site() )
-    async_exec("/data/data/org.python/assets/main.py")
-else:
-    print(fn,"not found")
-*/
-
 
 async function custom_postrun() {
     console.warn("VM.postrun Begin")
@@ -542,7 +526,6 @@ async function custom_postrun() {
         .catch(x => console.error(x))
     console.warn("VM.postrun End")
 }
-
 
 
 // ===================== DOM features ====================
@@ -1631,7 +1614,7 @@ async function onload() {
         debug_user = false
     }
 
-    const debug_dev = vm.PyConfig.orig_argv.includes("-X dev") || vm.PyConfig.orig_argv.includes("-d")
+    const debug_dev = vm.PyConfig.orig_argv.includes("-X dev") || vm.PyConfig.orig_argv.includes("-i")
     const debug_mobile = nuadm && ( debug_user || debug_dev )
     if ( debug_user || debug_dev || debug_mobile ) {
         debug_hidden = false;

@@ -513,6 +513,13 @@ del pfx, verbose
 `)
 }
 
+
+function store_file(url, local) {
+    fetch(url, {})
+        .then( response => checkStatus(response) && response.arrayBuffer() )
+        .then( buffer => vm.FS.writeFile(local, new Uint8Array(buffer)) )
+        .catch(x => console.error(x))
+}
 async function custom_postrun() {
     console.warn("VM.postrun Begin")
     const pyrc_url = vm.config.cdn + "pythonrc.py"
@@ -524,6 +531,17 @@ async function custom_postrun() {
         .then( response => checkStatus(response) && response.arrayBuffer() )
         .then( buffer => run_pyrc(new Uint8Array(buffer)) )
         .catch(x => console.error(x))
+
+    store_file(
+        "https://pygame-web.github.io/archives/repo/repodata.json",
+        "/data/data/org.python/repodata.json"
+    )
+/*
+    store_file(
+        "https://pygame-web.github.io/archives/repo/repodata.json",
+        "/data/data/org.python/repodata.json"
+    )
+*/
     console.warn("VM.postrun End")
 }
 

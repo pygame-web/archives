@@ -122,6 +122,10 @@ for whl in Path(".").glob("pkg/*.whl"):
                         continue
                     # print("\t",tln)
                     MAP[tln] = whlname
+#=============================================================================
+                    if tln == "cwcwidth":
+                        MAP["wcwidth"] = whlname
+#=============================================================================
                 archive.close()
                 found = True
                 break

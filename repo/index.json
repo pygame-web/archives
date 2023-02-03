@@ -107,6 +107,7 @@
     "svgwrite.data": "pkg/svgwrite-1.4.2-py3-none-any.whl",
     "svgwrite.extensions": "pkg/svgwrite-1.4.2-py3-none-any.whl",
     "sympy": "pkg/sympy-1.10.1-py3-none-any.whl",
+    "telemetrix_aio": "pkg/telemetrix_aio-1.11-py3-none-any.whl",
     "termcolor": "pkg/termcolor-1.1.0-py3-none-any.whl",
     "tests": "pkg/cmyt-1.0.4-py3-none-any.whl",
     "texttable": "pkg/texttable-1.6.7-py2.py3-none-any.whl",

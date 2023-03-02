@@ -42,6 +42,7 @@
     "htag": "pkg/htag-0.8.8-py3-none-any.whl",
     "htbulma": "pkg/htbulma-0.8.1-py3-none-any.whl",
     "html5lib": "pkg/bleach-5.0.0-py3-none-any.whl",
+    "i18n": "pkg/python_i18n-0.3.9-py3-none-any.whl",
     "igraph": "pkg/igraph-0.10.3-cp39-abi3-wasm32_mvp_emscripten.whl",
     "imageio": "pkg/imageio-2.19.3-py3-none-any.whl",
     "iniconfig": "pkg/iniconfig-1.1.1-py2.py3-none-any.whl",

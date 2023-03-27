@@ -1,5 +1,6 @@
 {
     "-CDN-": "https://pygame-web.github.io/archives/repo/",
+    "Box2D": "pkg/Box2D-2.3.10-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "Cython": "pkg/Cython-3.0.0a11-py2.py3-none-any.whl",
     "Fetch": "vendor/Fetch.py",
     "PIL": "pkg/PIL-9.1.1-<abi>-<abi>-wasm32_mvp_emscripten.whl",
@@ -40,6 +41,7 @@
     "fontTools": "pkg/fonttools-4.33.3-py3-none-any.whl",
     "future": "pkg/future-0.18.2-py3-none-any.whl",
     "glcontext": "pkg/glcontext-2.3.7-<abi>-<abi>-wasm32_mvp_emscripten.whl",
+    "glcontext_emscriptem": "pkg/glcontext_emscriptem-0.1.0-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "graphics": "vendor/graphics.py",
     "harfang": "pkg/harfang-3.2.5-cp32-abi3-wasm32_mvp_emscripten.whl",
     "htag": "pkg/htag-0.8.8-py3-none-any.whl",

@@ -109,6 +109,7 @@
     "pyxel": "pkg/pyxel-1.8.8-cp37-abi3-wasm32_mvp_emscripten.whl",
     "pyximport": "pkg/Cython-3.0.0a11-py2.py3-none-any.whl",
     "raypyc": "pkg/raypyc-0.1.7-py3-none-wasm32_mvp_emscripten.whl",
+    "regex": "pkg/regex-2022.10.31-<abi>-<abi>-emscripten_3_1_32_wasm32.whl",
     "retrying": "pkg/retrying-1.3.3-py3-none-any.whl",
     "ruamel": "pkg/ruamel.yaml-0.17.21-py3-none-any.whl",
     "setuptools": "pkg/setuptools-62.6.0-py3-none-any.whl",

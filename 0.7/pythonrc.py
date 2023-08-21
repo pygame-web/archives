@@ -2,9 +2,13 @@
 
 import os, sys, json, builtins
 
+
 # to be able to access aio.cross.simulator
 import aio
 import aio.cross
+
+# placeholder until v1.0
+sys.modules["pygbag"] = aio
 
 import time
 import inspect
@@ -120,7 +124,6 @@ except:
                 varname = l.split("=", 1)[0].strip(" []()")
 
                 for varname in map(str.strip, varname.split(",")):
-
                     if varname.find(" ") > 0:
                         continue
 
@@ -212,7 +215,6 @@ PyConfig["pygbag"] = 0
 
 
 class shell:
-
     # pending async tasks
     coro = []
 
@@ -535,7 +537,6 @@ ________________________
     # TODO: use run interactive c-api to run this one.
     @classmethod
     def run(cls, *argv, **env):
-
         __main__ = __import__("__main__")
         __main__dict = vars(__main__)
 
@@ -854,7 +855,6 @@ if not aio.cross.simulator:
     del fix_url
 
     def apply_patches():
-
         # use shell generators instead of subprocesses
         # ==========================================================
 
@@ -877,7 +877,6 @@ if not aio.cross.simulator:
         import webbrowser
 
         def browser_open(url, new=0, autoraise=True):
-
             platform.window.open(url, "_blank")
 
         def browser_open_new(url):
@@ -950,7 +949,6 @@ if not aio.cross.simulator:
         from platform import window, document, ffi
 
         class fopen:
-
             flags = {
                 #                'mode': "no-cors",
                 "redirect": "follow",
@@ -1087,7 +1085,6 @@ if not aio.cross.simulator:
             # raise EOFError
 
         def eval(self, source):
-
             for count, line in enumerate(source.split("\n")):
                 if not count:
                     if line.startswith("<"):
@@ -1155,7 +1152,6 @@ if not aio.cross.simulator:
 
         @classmethod
         def list_imports(cls, code=None, file=None):
-
             if code is None:
                 if file:
                     with open(file) as fcode:
@@ -1168,7 +1164,7 @@ if not aio.cross.simulator:
             file = file or "<stdin>"
 
             for want in cls.scan_imports(code, file):
-                print(f"1044: requesting module {want=} for {file=} ")
+                # DBG(f"1171: requesting module {want=} for {file=} ")
                 repo = None
                 for repo in PyConfig.pkg_repolist:
                     if want in cls.may_need:
@@ -1176,12 +1172,12 @@ if not aio.cross.simulator:
                         break
 
                     if want in sys.modules:
-                        DBG(f"1049: skip module {want=} reason: sys.modules")
+                        DBG(f"1179: skip module {want=} reason: sys.modules")
                         break
 
                     if want in repo:
                         cls.may_need.append(want)
-                        DBG(f"1055: module {want=} requested")
+                        # DBG(f"1184: module {want=} requested")
                         yield want
                         break
                 else:
@@ -1195,7 +1191,6 @@ if not aio.cross.simulator:
             unseen = False
             for mod in mods:
                 for dep in cls.repos[0]["packages"].get(mod, {}).get("depends", []):
-
                     if mod in sys.modules:
                         continue
 
@@ -1217,10 +1212,29 @@ if not aio.cross.simulator:
             if "numpy" in wants:
                 wants.remove("numpy")
                 wants.insert(0, "numpy")
+            # FIXME !
+            # FIXME !
+            # FIXME !
+            # FIXME !
+            # FIXME !
+            # FIXME !
+
             if "igraph" in wants:
                 if "texttable" in wants:
                     wants.remove("texttable")
                 wants.insert(0, "texttable")
+
+            if "pygame_gui" in wants:
+                wants.insert(0, "i18n")
+            # FIXME !
+            # FIXME !
+            # FIXME !
+            # FIXME !
+            # FIXME !
+            # FIXME !
+            # FIXME !
+            # FIXME !
+            # FIXME !
 
             return wants
 
@@ -1350,14 +1364,9 @@ if not aio.cross.simulator:
                     msg = f"928: cannot download {req} pkg"
                     callback(req, error=msg)
                     continue
-                # TODO: deadcode ?
-                if req in platform.patches:
-                    print("1303:", req, "requires patch")
-                    platform.patches.pop(req)()
 
         @classmethod
         async def pv(cls, track, prefix="", suffix="", decimals=1, length=70, fill="X", printEnd="\r"):
-
             # Progress Bar Printing Function
             def print_pg_bar(total, iteration):
                 if iteration > total:
@@ -1383,7 +1392,6 @@ if not aio.cross.simulator:
         async def async_repos(cls):
             abitag = f"cp{sys.version_info.major}{sys.version_info.minor}"
             for repo in PyConfig.pkg_indexes:
-                print("1340:", repo)
                 async with fopen(f"{repo}index.json", "r") as index:
                     try:
                         data = index.read()
@@ -1392,7 +1400,7 @@ if not aio.cross.simulator:
                         data = data.replace("<abi>", abitag)
                         repo = json.loads(data)
                     except:
-                        pdb(f"{repo}: malformed json index {data}")
+                        pdb(f"1394: {repo=}: malformed json index {data}")
                         continue
                     if repo not in PyConfig.pkg_repolist:
                         PyConfig.pkg_repolist.append(repo)
@@ -1409,7 +1417,6 @@ if not aio.cross.simulator:
 
 
 else:
-
     pdb("TODO: js simulator")
 
 
@@ -1448,13 +1455,15 @@ def patch():
     os.environ["COLS"] = str(COLS)
     os.environ["LINES"] = str(LINES)
 
-    def patch_os_get_terminal_size():
+
+    def patch_os_get_terminal_size(fd=0):
         cols = os.environ.get("COLS", 80)
         lines = os.environ.get("LINES", 25)
         try:
-            return (int(cols), int(lines))
+            res= (int(cols), int(lines),)
         except:
-            return (80, 25)
+            res (80, 25,)
+        return os.terminal_size(res)
 
     os.get_terminal_size = patch_os_get_terminal_size
 
@@ -1623,10 +1632,18 @@ def patch():
 
         sys.modules["wcwidth"] = cwcwidth
 
+    def patch_pygame():
+        import pygame
+        import platform_wasm.pygame
+        import platform_wasm.pygame.vidcap
+
+        sys.modules["pygame.vidcap"] = platform_wasm.pygame.vidcap
+
     platform.patches = {
         "matplotlib": patch_matplotlib_pyplot,
         "panda3d": patch_panda3d_showbase,
         "wcwidth": patch_cwcwidth,
+        "pygame.base": patch_pygame,
     }
 
 
@@ -1681,11 +1698,23 @@ def CSI(*argv):
         ESC(f"[{arg}")
 
 
+try:
+    console
+except:
+
+    class console:
+        def log(*argv, **kw):
+            import io
+
+            kw["file"] = io.StringIO(newline="\r\n")
+            print(*argv, **kw)
+            embed.warn(kw["file"].getvalue())
+
+
 import aio.recycle
 
 # ============================================================
 # DO NOT ADD ANYTHING FROM HERE OR APP RECYCLING WILL TRASH IT
-
 
 #
 
@@ -1815,6 +1844,16 @@ async def import_site(__file__, run=True):
         if local and local.is_file():
             pdir = str(local.parent)
             os.chdir(pdir)
+            if "-v" in PyConfig.orig_argv:
+                print()
+                print("_" * 70)
+                with open(local, "r") as source:
+                    for i, l in enumerate(source.readlines()):
+                        print(str(i).zfill(5), l, end="")
+                print()
+                print("_" * 70)
+                print()
+
             # TODO: check orig_argv for isolation parameters
             if not pdir in sys.path:
                 sys.path.insert(0, pdir)

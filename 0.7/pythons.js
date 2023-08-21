@@ -67,7 +67,7 @@ function reverse(s){
     return s.split("").reverse().join("");
 }
 
-// please comment if you find a bug
+// please comment here if you find a bug
 // https://stackoverflow.com/questions/5202085/javascript-equivalent-of-pythons-rsplit
 
 String.prototype.rsplit = function(sep, maxsplit) {
@@ -92,12 +92,14 @@ String.prototype.rsplit = function(sep, maxsplit) {
     if (result.length) {
         result.reverse()
         if (data.length>1) {
-            return [data.join(sep), result ]
+            // thx @imkzh
+            return [data.join(sep), ...result ]
         }
         return result
     }
     return [this]
 }
+
 
 function jsimport(url, sync) {
     const jsloader=document.createElement('script')
@@ -575,23 +577,25 @@ async function custom_postrun() {
 
 function feat_gui(debug_hidden) {
 
-    var canvas = document.getElementById("canvas")
+    var canvas2d = document.getElementById("canvas")
 
-    if (!canvas) {
+    function add_canvas(name, width, height) {
+        const new_canvas = document.createElement("canvas")
+        new_canvas.id = name
+        new_canvas.width = width || 1
+        new_canvas.height = height || 1
+        document.body.appendChild(new_canvas)
+        return new_canvas
+    }
+
+    if (!canvas2d) {
         config.user_canvas = config.user_canvas || 0 //??=
         config.user_canvas_managed = config.user_canvas_managed || 0 //??=
-        canvas = document.createElement("canvas")
-        canvas.id = "canvas"
-        canvas.width = 1
-        canvas.height = 1
-        canvas.style.position = "absolute"
-        canvas.style.top = "0px"
-        canvas.style.right = "0px"
-        canvas.tabindex = 0
-        document.body.appendChild(canvas)
-console.warn("TODO: test 2D/3D reservation")
-
-
+        canvas2d =  add_canvas("canvas")
+        canvas2d.style.position = "absolute"
+        canvas2d.style.top = "0px"
+        canvas2d.style.right = "0px"
+        canvas2d.tabindex = 0
         //var ctx = canvas.getContext("2d")
     } else {
         // user managed canvas
@@ -600,7 +604,18 @@ console.warn("TODO: test 2D/3D reservation")
 console.warn("TODO: user defined canvas")
     }
 
-    vm.canvas = canvas
+    vm.canvas2d = canvas2d
+
+    var canvas3d = document.getElementById("canvas3d")
+    if (!canvas3d) {
+        canvas3d = add_canvas("canvas3d", 128, 128)
+        canvas3d.style.position = "absolute"
+        canvas3d.style.bottom = "0px"
+        canvas3d.style.left = "0px"
+
+    }
+    vm.canvas3d = canvas3d
+
 /*
 
 
@@ -625,6 +640,7 @@ console.warn("TODO: user defined canvas")
 
     // window resize
     function window_canvas_adjust(divider) {
+        const canvas = vm.canvas2d
         var want_w
         var want_h
 
@@ -660,9 +676,6 @@ console.warn("TODO: user defined canvas")
         want_w = Math.trunc(want_w / divider )
         want_h = Math.trunc(want_w / ar)
 
-        if (vm.config.debug)
-            console.log("window[DEBUG:CORRECTED]:", want_w, want_h, ar, divider)
-
 
         // constraints
         if (want_h > max_height) {
@@ -675,10 +688,6 @@ console.warn("TODO: user defined canvas")
                 want_h = want_h / ar
         }
 
-        // apply
-
-        canvas.style.width = want_w + "px"
-        canvas.style.height = want_h + "px"
 
         if (vm.config.debug) {
             canvas.style.margin= "none"
@@ -697,10 +706,20 @@ console.warn("TODO: user defined canvas")
             canvas.style.right = 0
             canvas.style.margin= "auto"
         }
+
+        // apply
+        canvas.style.width = want_w + "px"
+        canvas.style.height = want_h + "px"
+
+        if (vm.config.debug)
+            console.log(`window[DEBUG:CORRECTED]: ${want_w}, ${want_h}, ar=${ar}, div=${divider}`)
+
+
     }
 
 
     function window_canvas_adjust_3d(divider) {
+        const canvas = vm.canvas3d
         divider = divider || 1
         if ( (canvas.width==1) && (canvas.height==1) ){
             console.log("canvas context not set yet")
@@ -731,6 +750,10 @@ console.warn("TODO: user defined canvas")
         want_w = max_width
         want_h = max_height
 
+
+        if (vm.config.debug)
+            console.log("window3D[DEBUG:CORRECTED]:", want_w, want_h, ar, divider)
+
         // keep fb ratio
         want_w = Math.trunc(want_w / divider )
         want_h = Math.trunc(want_w / ar)
@@ -752,10 +775,6 @@ console.warn("TODO: user defined canvas")
         canvas.width  = vm.config.fb_width
         canvas.height = vm.config.fb_height
 
-        // apply viewport size
-        canvas.style.width = want_w + "px"
-        canvas.style.height = want_h + "px"
-
         canvas.style.position = "absolute"
         canvas.style.top = 0
         canvas.style.right = 0
@@ -770,10 +789,13 @@ console.warn("TODO: user defined canvas")
             canvas.style.left = "auto"
             canvas.style.bottom = "auto"
         }
+
+        // apply viewport size
+        canvas.style.width = want_w + "px"
+        canvas.style.height = want_h + "px"
+
         queue_event("resize3d", { width : want_w, height : want_h } )
 
-        //const gl = canvas.getContext('webgl2')
-        //gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
     }
 
     function window_resize_3d(gui_divider) {
@@ -813,7 +835,8 @@ console.log(" @@@@@@@@@@@@@@@@@@@@@@ 3D CANVAS @@@@@@@@@@@@@@@@@@@@@@")
     else
         window.window_resize = window_resize_2d
 
-    return canvas
+    vm.canvas = canvas2d || canvas3d
+    return vm.canvas
 }
 
 
@@ -1350,12 +1373,18 @@ window.MM.camera.init = function * (device, width,height, preview, grabber) {
         vidcap.id = "vidcap"
         vidcap.autoplay = true
 
+        window.vidcap = vidcap
         width = width || 640
         height = height || 480
 
+        vidcap.width = width
+        vidcap.height = height
         const device = MM.camera.device || "/dev/video0"
 
+
+
         MM.camera.fd = {}
+        MM.camera.busy = 0
 
         // 60 fps
         MM.camera.frame = { device : undefined , rate : Number.parseInt(1000/30/4) }
@@ -1363,8 +1392,10 @@ window.MM.camera.init = function * (device, width,height, preview, grabber) {
         var framegrabber = null
 
         if (window.stdout) {
+
             if (preview)
                 stdout.appendChild(vidcap)
+
             if (grabber) {
                 framegrabber = document.createElement('canvas')
                 stdout.appendChild(framegrabber)
@@ -1380,7 +1411,7 @@ window.MM.camera.init = function * (device, width,height, preview, grabber) {
             framegrabber.height = height
         }
 
-        var localMediaStream = null;
+        window.framegrabber = framegrabber
 
         function onCameraFail(e) {
             console.log('924: Camera did not start.', e)
@@ -1388,52 +1419,66 @@ window.MM.camera.init = function * (device, width,height, preview, grabber) {
             done =1
         }
 
-        MM.camera.get_raw = function () {
-            if (localMediaStream) {
-                framegrabber.getContext("2d").drawImage(localMediaStream, 0, 0);
+        const params = {
+            audio: false,
+            video: {
+                "width": { ideal: width },
+                "height": {  ideal: height },
             }
         }
 
-        const params = {
-            audio: true,
-            video: {
-                mandatory: {
-                    maxWidth: width,
-                    maxHeight: height
-                }
-            }
+
+        MM.camera.query_image = function () {
+            // ok to use previous image
+            if ( FS.analyzePath(device).exists )
+                return true
+            if (MM.camera.busy>25)
+                console.error("frame grabber is stuck")
+            return false
+        }
+
+        // TODO: same but async
+        MM.camera.get_raw = function * () {
+            // capture next frame and wait conversion
+            setTimeout(GRABBER, 0)
+            while (!MM.camera.frame[device])
+                yield 0
+            return MM.camera.frame[device]
         }
 
         const reader = new FileReader()
 
         reader.addEventListener("load", () => {
-            const data = new Int8Array(reader.result)
-            FS.writeFile(device,  new Int8Array(reader.result) )
-            MM.camera.frame[device] = 1
-            setTimeout(GRABBER, MM.camera.frame["rate"])
+                const data = new Int8Array(reader.result)
+                FS.writeFile(device,  data )
+                //console.log("frame ready at ", MM.camera.busy)
+                MM.camera.frame[device] = data.length
+                MM.camera.busy--
             }, false
         )
 
         async function GRABBER() {
-            if ( !FS.analyzePath(device).exists ) {
-                // get new frame !
-                MM.camera.frame[device] = undefined
-                MM.camera.get_raw()
-                MM.camera.blob = await framegrabber.convertToBlob({type:"image/png"})
-                reader.readAsArrayBuffer(MM.camera.blob)
-            } else {
-                // last image not yet consummed schedule deadline in next RaF loop
+            if (MM.camera.busy<25)
                 setTimeout(GRABBER, MM.camera.frame["rate"])
-            }
+
+            if (MM.camera.busy>0)
+                return
+
+            MM.camera.busy++
+            framegrabber.getContext("2d").drawImage(vidcap, 0, 0);
+
+            // convert the new frame !
+            MM.camera.frame[device] = undefined
+            MM.camera.blob = await framegrabber.convertToBlob({type:"image/png"})
+            reader.readAsArrayBuffer(MM.camera.blob)
         }
 
         window.GRABBER = GRABBER
 
         function connection(stream) {
-            localMediaStream = vidcap // document.querySelector('video');
-            localMediaStream.srcObject = stream
-            localMediaStream.onloadedmetadata = function(e) {
-                GRABBER()
+            vidcap.srcObject = stream
+            vidcap.onloadedmetadata = function(e) {
+                setTimeout(GRABBER, 0)
                 console.log("video stream ready")
                 MM.camera.started = 1
                 done =1
@@ -1450,7 +1495,6 @@ window.MM.camera.init = function * (device, width,height, preview, grabber) {
         // wait for first frame
         while (!MM.camera.frame[device])
             yield 0
-
     }
     yield window.MM.camera.started
 }
@@ -1855,11 +1899,11 @@ async function onload() {
 
             vm.config.user_canvas_managed = vm.config.user_canvas_managed || 1
 
-            const canvas = feat_gui(true)
-            if ( canvas.innerHTML.length > 20 ) {
+            const canvasXd = feat_gui(true)
+            if ( canvasXd.innerHTML.length > 20 ) {
                 vm.PyConfig.frozen = "/tmp/to_embed.py"
             }
-            // only canvas when embedding, stdxxx go to console.
+            // only canvas when embedding 2D/3D, stdxxx go to console.
             break
         }
 
@@ -2024,15 +2068,23 @@ console.log("pythons found at", url , elems)
         console.warn("1601: no inlined code found")
     }
 
-    // default
-    vm.script.interpreter = "cpython"
+    // resolve python executable
 
     if (vm.cpy_argv.length) {
         var orig_argv_py
-        if ( vm.cpy_argv[0].search('cpython3')>=0 || vm.cpy_argv[0].search('wapy')>=0 )
-            orig_argv_py = vm.script.interpreter
-        vm.script.interpreter = orig_argv_py || config.python || vm.script.interpreter
-        console.log("no python implementation specified, using default :",vm.script.interpreter)
+        if (vm.cpy_argv[0].search('cpython3')>=0) {
+            vm.script.interpreter = "cpython"
+            config.PYBUILD = vm.cpy_argv[0].substr(7) || "3.11"
+        } else {
+            if (vm.cpy_argv[0].search('wapy')>=0) {
+// TODO wapy is not versionned
+                vm.script.interpreter = "wapy"
+            } else {
+                vm.script.interpreter = config.python || "cpython"
+                config.PYBUILD = vm.cpy_argv[0].substr(7) || "3.11"
+                console.log("no python implementation specified in ",vm.cpy_argv,", using default :",vm.script.interpreter)
+            }
+        }
     }
 
     // running pygbag proxy, lan testing or a module url ?
@@ -2041,6 +2093,12 @@ console.log("pythons found at", url , elems)
     }
 
     config.cdn     = config.cdn || url.split(module_name, 1)[0]  //??=
+    config.pydigits =  config.pydigits || config.PYBUILD.replace(".","") //??=
+    config.executable = config.executable || `${config.cdn}python${config.pydigits}/main.js` //??=
+
+
+    // resolve arguments
+
     config.xtermjs = config.xtermjs || 0
 
     config.archive = config.archive || (location.search.search(".apk")>=0)  //??=
@@ -2051,7 +2109,7 @@ console.log("pythons found at", url , elems)
 config.interactive = config.interactive || (location.search.search("-i")>=0) //??=
 
     config.cols = cfg.cols || 132
-    config.lines = cfg.lines || 42
+    config.lines = cfg.lines || 32
 
     config.gui_debug = config.gui_debug ||  2  //??=
 
@@ -2062,15 +2120,14 @@ config.interactive = config.interactive || (location.search.search("-i")>=0) //?
     config.can_close = config.can_close || 0
     config.autorun  = config.autorun || 0 //??=
     config.features = config.features || cfg.os.split(",") //??=
-// TODO wapy is not versionned
-    config.PYBUILD  = config.PYBUILD || vm.script.interpreter.substr(7) || "3.11" //??=
+
     config._sdl2    = config._sdl2 || "canvas" //??=
 
     if (config.ume_block === undefined)
         config.ume_block || true //??=
 
-    config.pydigits =  config.pydigits || config.PYBUILD.replace(".","") //??=
-    config.executable = config.executable || `${config.cdn}python${config.pydigits}/main.js` //??=
+    console.log(JSON.stringify(config))
+
 
     // https://docs.python.org/3/c-api/init_config.html#initialization-with-pyconfig
 

@@ -100,7 +100,7 @@
     "pygments": "pkg/Pygments-2.12.0-py3-none-any.whl",
     "pylab": "pkg/matplotlib-3.5.2-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "pymunk": "pkg/pymunk-6.4.0-<abi>-<abi>-wasm32_mvp_emscripten.whl",
-    "pyparsing": "pkg/pyparsing-3.0.9-py3-none-any.whl",
+    "pyparsing": "pkg/pyparsing-3.1.1-py3-none-any.whl",
     "pyrr": "pkg/pyrr-0.10.3-py3-none-any.whl",
     "pyrsistent": "pkg/pyrsistent-0.19.2-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "pytest": "pkg/pytest-7.1.2-py3-none-any.whl",

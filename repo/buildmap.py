@@ -96,9 +96,6 @@ def _determine_major_import_names(
 
 
 for whl in Path(".").glob("pkg/*.whl"):
-    # print()
-    # print(whl.stem)
-
     whlname = whl.as_posix()
 
     for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
@@ -136,6 +133,42 @@ for whl in Path(".").glob("pkg/*.whl"):
             for tln in find_major_import_import_names(wheel_file):
                 MAP[tln] = whlname
 
+for whl in Path(".").glob("pkg/*wasm32_bi_emscripten.whl"):
+    whlname = whl.as_posix()
+
+    for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
+        whlname = whlname.replace(replace, "-<abi>")
+
+    whlname = whlname.replace("-wasm32_mvp_emscripten", "-<api>")
+    input()
+
+    found = False
+
+    with ZipFile(whl) as archive:
+        for name in archive.namelist():
+            if name.endswith(".dist-info/top_level.txt"):
+                f = archive.open(name)
+                for tln in f.read().decode().split("\n"):
+                    tln = tln.strip().replace("/", ".")
+                    if not tln:
+                        continue
+
+
+
+                    if tln in MAP:
+                        print(f"override pkg name toplevel {tln} collision with", MAP[tln] )
+                    MAP[tln] = whlname
+                archive.close()
+                found = True
+                break
+        if not found:
+            print()
+            print("MISSING TOPLEVEL :", whl)
+            wheel_file = WheelFile(archive)
+            for tln in find_major_import_import_names(wheel_file):
+                MAP[tln] = whlname
+
+
 
 for py in Path(".").glob("vendor/*.py"):
     tln = py.stem
@@ -144,5 +177,5 @@ for py in Path(".").glob("vendor/*.py"):
 for k, v in MAP.items():
     print(k, v)
 
-with open("index.json", "w") as f:
+with open("index-bi.json", "w") as f:
     print(json.dumps(MAP, sort_keys=True, indent=4), file=f)

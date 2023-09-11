@@ -133,14 +133,25 @@ for whl in Path(".").glob("pkg/*.whl"):
             for tln in find_major_import_import_names(wheel_file):
                 MAP[tln] = whlname
 
+
+print("""
+
+
+
+        ============== bi ======================
+
+
+
+""")
+
 for whl in Path(".").glob("pkg/*wasm32_bi_emscripten.whl"):
     whlname = whl.as_posix()
 
     for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
         whlname = whlname.replace(replace, "-<abi>")
 
-    whlname = whlname.replace("-wasm32_mvp_emscripten", "-<api>")
-    input()
+    whlname = whlname.replace("-wasm32_bi_emscripten", "-<api>")
+
 
     found = False
 
@@ -153,10 +164,8 @@ for whl in Path(".").glob("pkg/*wasm32_bi_emscripten.whl"):
                     if not tln:
                         continue
 
-
-
                     if tln in MAP:
-                        print(f"override pkg name toplevel {tln} collision with", MAP[tln] )
+                        print(f"override pkg name toplevel {tln} with", whlname )
                     MAP[tln] = whlname
                 archive.close()
                 found = True
@@ -168,7 +177,7 @@ for whl in Path(".").glob("pkg/*wasm32_bi_emscripten.whl"):
             for tln in find_major_import_import_names(wheel_file):
                 MAP[tln] = whlname
 
-
+input()
 
 for py in Path(".").glob("vendor/*.py"):
     tln = py.stem

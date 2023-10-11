@@ -111,6 +111,8 @@
     "pytest": "pkg/pytest-7.1.2-py3-none-any.whl",
     "pytest_benchmark": "pkg/pytest_benchmark-3.4.1-py2.py3-none-any.whl",
     "pytz": "pkg/pytz-2022.1-py2.py3-none-any.whl",
+    "pyvcmdline": "pkg/pyved_engine-23.8a5-py3-none-any.whl",
+    "pyved_engine": "pkg/pyved_engine-23.8a5-py3-none-any.whl",
     "pyxel": "pkg/pyxel-1.9.10-cp37-abi3-<api>.whl",
     "pyximport": "pkg/Cython-3.0.0a11-py2.py3-none-any.whl",
     "raypyc": "pkg/raypyc-0.1.8-cp37-abi3-<api>.whl",

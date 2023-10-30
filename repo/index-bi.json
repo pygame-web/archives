@@ -75,6 +75,7 @@
     "nltk": "pkg/nltk-3.7-py3-none-any.whl",
     "noise": "pkg/noise-1.2.2-<abi>-<abi>-<api>.whl",
     "nose": "pkg/nose-1.3.7-py3-none-any.whl",
+    "nova": "pkg/nova-0.5.2-<abi>-<abi>-<api>.whl",
     "numcodecs": "pkg/numcodecs-0.9.1-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "numpy": "pkg/numpy-1.25.2-<abi>-<abi>-<api>.whl",
     "nurses_2": "pkg/nurses_2-0.18.5-py3-none-any.whl",

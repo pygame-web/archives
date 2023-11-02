@@ -1231,8 +1231,8 @@ async function media_prepare(trackid) {
                                 BrowserFS.MountableFileSystem.Create({
                                     '/' : ovfs
                                     }, async function(e, mfs) {
-                                        await BrowserFS.initialize(mfs);
-                                        await vm.FS.mount(vm.BFS, {root: track.mount.path}, track.mount.point);
+                                        await BrowserFS.initialize(mfs)
+                                        await vm.FS.mount(vm.BFS, {root: track.mount.path}, track.mount.point)                                    
                                         setTimeout(()=>{track.ready=true}, 0)
                                     })
                             }
@@ -1264,10 +1264,10 @@ async function media_prepare(trackid) {
             });
 
             vm.FS.mount(vm.BFS, { root: track.mount.path, }, track.mount.point);
-
+            setTimeout(()=>{track.ready=true}, 0)
         } // bfs2
 
-        setTimeout(()=>{track.ready=true}, 0)
+
 
     } // track type mount
 }

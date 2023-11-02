@@ -123,7 +123,6 @@
     "setuptools": "pkg/setuptools-62.6.0-py3-none-any.whl",
     "six": "pkg/six-1.16.0-py2.py3-none-any.whl",
     "soupsieve": "pkg/soupsieve-2.3.2.post1-py3-none-any.whl",
-    "src": "pkg/kiwisolver-1.4.4-<abi>-<abi>-<api>.whl",
     "svgwrite": "pkg/svgwrite-1.4.2-py3-none-any.whl",
     "svgwrite.data": "pkg/svgwrite-1.4.2-py3-none-any.whl",
     "svgwrite.extensions": "pkg/svgwrite-1.4.2-py3-none-any.whl",

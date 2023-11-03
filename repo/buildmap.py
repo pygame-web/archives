@@ -112,7 +112,8 @@ for whl in Path(".").glob("pkg/*.whl"):
                     if not tln:
                         continue
 
-
+                    if tln == "src":
+                        continue
 
                     if tln in MAP:
                         # print(f"pkg name toplevel {tln} collision with", MAP[tln] )
@@ -163,7 +164,10 @@ for whl in Path(".").glob("pkg/*wasm32_bi_emscripten.whl"):
                     tln = tln.strip().replace("/", ".")
                     if not tln:
                         continue
-
+# https://matrix.to/#/!tzLDlLJSRpMoEoMBGG:gitter.im/$ARVOAirw4AiSn2wuzZs76QoKfKp7_PwFMlw2OhucS6g?via=gitter.im&via=matrix.org&via=ocf.berkeley.edu
+# pyodide's kiwisolver has src in dist-info toplevel
+                    if tln == "src":
+                        continue
                     if tln in MAP:
                         print(f"override pkg name toplevel {tln} with", whlname )
                     MAP[tln] = whlname
@@ -177,7 +181,7 @@ for whl in Path(".").glob("pkg/*wasm32_bi_emscripten.whl"):
             for tln in find_major_import_import_names(wheel_file):
                 MAP[tln] = whlname
 
-input()
+# input()
 
 for py in Path(".").glob("vendor/*.py"):
     tln = py.stem

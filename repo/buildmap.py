@@ -168,6 +168,10 @@ for whl in Path(".").glob("pkg/*wasm32_bi_emscripten.whl"):
 # pyodide's kiwisolver has src in dist-info toplevel
                     if tln == "src":
                         continue
+#=============================================================================
+                    if tln == "cwcwidth":
+                        MAP["wcwidth"] = whlname
+#=============================================================================
                     if tln in MAP:
                         print(f"override pkg name toplevel {tln} with", whlname )
                     MAP[tln] = whlname

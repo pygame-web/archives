@@ -31,7 +31,7 @@
     "colorspacious": "pkg/colorspacious-1.1.2-py2.py3-none-any.whl",
     "cssselect": "pkg/cssselect-1.1.0-py2.py3-none-any.whl",
     "cv2": "pkg/opencv_python-4.6.0.66-<abi>-<abi>-<api>.whl",
-    "cwcwidth": "pkg/cwcwidth-0.1.8-<abi>-<abi>-wasm32_mvp_emscripten.whl",
+    "cwcwidth": "pkg/cwcwidth-0.1.8-<abi>-<abi>-<api>.whl",
     "cycler": "pkg/cycler-0.11.0-py3-none-any.whl",
     "cython": "pkg/Cython-3.0.0a11-py2.py3-none-any.whl",
     "dateutil": "pkg/python_dateutil-2.8.2-py2.py3-none-any.whl",

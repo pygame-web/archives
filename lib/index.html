@@ -1,0 +1,76 @@
+<html>
+<head>
+<script>
+console.log("dlfcn:init")
+var ns = {}
+const delay = (ms, fn_solver) => new Promise(resolve => setTimeout(() => resolve(fn_solver()), ms));
+function _until(fn_solver){
+    return async function fwrapper(){
+        var argv = Array.from(arguments)
+        function solve_me(){return  fn_solver.apply(window, argv ) }
+        while (!await delay(1, solve_me ) )
+            {};
+    }
+}
+
+window._until =  _until
+
+function print(...argv) {
+    stdout.innerHTML = stdout.innerHTML + argv.join(" ") + "\n"
+}
+
+async function rx(event) {
+    const rxmsg = ""+event.data
+    const origin = event.origin
+    var e = rxmsg.split(':')
+    const rt = e.shift()
+    if (rt == "dlopen") {
+        const lib = e.shift()
+        const linkid = e.shift()
+        const pkgframe = document.createElement("iframe")
+// TODO use a numeric handle
+        pkgframe.id = linkid
+        pkgframe.loading = "eager"
+        ns[lib] = pkgframe
+        pkgframe.style.display = "none";
+        pkgframe.src = "/archives/lib/"+lib+"/index.html#"+linkid
+
+        document.body.appendChild(pkgframe)
+
+        const doc = pkgframe.contentDocument || pkgframe.contentWindow.document
+        console.log("dlopen: linking ", pkgframe.id )
+        //await _until( ()=>{ return doc.readyState  == 'complete' } )()
+        print(lib)
+
+    } else {
+        if (rt == "dlfcn") {
+            const pkg = e.shift()
+            const linkref = e.shift()
+            if (linkref.substring(0,1) == "#" ) {
+                const linkid = linkref.substr(1)
+                console.log("dlfcn->dlopen", linkid )
+                //setTimeout(window.parent.postMessage, 0 , "dlopen:linked:"+linkid, document.referrer )
+                window.parent.postMessage("dlopen:linked:"+linkid,  document.referrer)
+            } else {
+                console.log("bus? :", rxmsg)
+            }
+        } else {
+            console.log("bus", rxmsg )
+            ns[rt].contentWindow.postMessage(e.shift())
+        }
+    }
+}
+
+window.addEventListener("message", rx, false)
+</script>
+</head>
+
+<body>
+dlfcn.js
+<hr>
+<pre id=stdout>
+</pre>
+</body>
+
+</html>
+

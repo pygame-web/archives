@@ -135,7 +135,7 @@
     "termcolor": "pkg/termcolor-1.1.0-py3-none-any.whl",
     "tests": "pkg/cmyt-1.0.4-py3-none-any.whl",
     "texttable": "pkg/texttable-1.6.7-py2.py3-none-any.whl",
-    "textual": "pkg/textual-0.42.0-py3-none-any.whl",
+    "textual": "pkg/textual-0.44.0-py3-none-any.whl",
     "threadpoolctl": "pkg/threadpoolctl-3.1.0-py3-none-any.whl",
     "tlz": "pkg/toolz-0.11.2-py3-none-any.whl",
     "tomli": "pkg/tomli-2.0.1-py3-none-any.whl",

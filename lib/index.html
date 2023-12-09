@@ -28,21 +28,17 @@ async function rx(event) {
         const lib = e.shift()
         const linkid = e.shift()
         const pkgframe = document.createElement("iframe")
-// TODO use a numeric handle
         pkgframe.id = linkid
         pkgframe.loading = "eager"
+        pkgframe.sandbox="allow-same-origin allow-top-navigation allow-scripts"
         pkgframe.allow="autoplay; geolocation; microphone; camera; midi; gyroscope; accelerometer; cross-origin-isolated"
-        pkgframe.style.display = "none";
+//        pkgframe.style.display = "none";
         pkgframe.src = "/archives/lib/"+lib+"/index.html#"+linkid
 
         ns[lib] = pkgframe
         document.body.appendChild(pkgframe)
-
-
-        const doc = pkgframe.contentDocument || pkgframe.contentWindow.document
         console.log("dlopen: linking ", pkgframe.id )
-        //await _until( ()=>{ return doc.readyState  == 'complete' } )()
-        print(lib)
+        print("linking", lib)
 
     } else {
         if (rt == "dlfcn") {

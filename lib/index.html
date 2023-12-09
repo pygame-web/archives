@@ -35,7 +35,7 @@ async function rx(event) {
 //        pkgframe.style.display = "none";
         pkgframe.src = "/archives/lib/"+lib+"/index.html#"+linkid
 
-        ns[lib] = pkgframe
+        ns[linkid] = pkgframe
         document.body.appendChild(pkgframe)
         console.log("dlopen: linking ", pkgframe.id )
         print("linking", lib)
@@ -50,11 +50,13 @@ async function rx(event) {
                 //setTimeout(window.parent.postMessage, 0 , "dlopen:linked:"+linkid, document.referrer )
                 window.parent.postMessage("dlopen:ok:"+linkid,  document.referrer)
             } else {
-                console.log("bus? :", rxmsg)
+                console.log("bus(53)", rxmsg)
             }
         } else {
-            console.log("bus", rxmsg )
-            ns[rt].contentWindow.postMessage(e.shift())
+            if (!ns[rt])
+                console.log("bus(57)", rxmsg )
+            else
+                ns[rt].contentWindow.postMessage(e.shift())
         }
     }
 }

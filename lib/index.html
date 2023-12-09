@@ -32,7 +32,7 @@ async function rx(event) {
         pkgframe.loading = "eager"
         pkgframe.sandbox="allow-same-origin allow-top-navigation allow-scripts"
         pkgframe.allow="autoplay; geolocation; microphone; camera; midi; gyroscope; accelerometer; cross-origin-isolated"
-//        pkgframe.style.display = "none";
+        pkgframe.style.display = "none";
         pkgframe.src = "/archives/lib/"+lib+"/index.html#"+linkid
 
         ns[linkid] = pkgframe
@@ -42,15 +42,20 @@ async function rx(event) {
 
     } else {
         if (rt == "dlfcn") {
-            const pkg = e.shift()
+            const serial = e.shift()
             const linkref = e.shift()
-            if (linkref.substring(0,1) == "#" ) {
-                const linkid = linkref.substr(1)
-                console.log("dlfcn->dlopen", linkid )
-                //setTimeout(window.parent.postMessage, 0 , "dlopen:linked:"+linkid, document.referrer )
-                window.parent.postMessage("dlopen:ok:"+linkid,  document.referrer)
+            if (serial == "") {
+                if (linkref.substring(0,1) == "#" ) {
+                    const linkid = linkref.substr(1)
+                    console.log("dlfcn->dlopen", linkid )
+                    window.parent.postMessage("dlopen::"+linkid,  document.referrer)
+                } else {
+                    console.log("bus(53)", rxmsg)
+                }
+            // return value with serial
             } else {
-                console.log("bus(53)", rxmsg)
+                //console.warn("dlfcn->dopen rv:", serial, linkref)
+                window.parent.postMessage("dlopen:"+serial+":"+linkref, document.referrer)
             }
         } else {
             if (!ns[rt])
@@ -64,7 +69,7 @@ async function rx(event) {
 window.addEventListener("message", rx, false)
 window.onload= ()=>{
     print(document.location.host)
-    window.parent.postMessage("dlopen:ok:dlopen",  document.referrer)
+    window.parent.postMessage("dlopen::dlopen",  document.referrer)
 }
 
 </script>

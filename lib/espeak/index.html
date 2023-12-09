@@ -9,6 +9,7 @@
     <script>
     function say(string) {
         speak(string, {noWorker: true })
+        return "I said : "+string
     }
     function onlink() {
         say("ready")

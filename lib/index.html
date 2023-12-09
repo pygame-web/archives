@@ -31,11 +31,13 @@ async function rx(event) {
 // TODO use a numeric handle
         pkgframe.id = linkid
         pkgframe.loading = "eager"
-        ns[lib] = pkgframe
+        pkgframe.allow="autoplay; geolocation; microphone; camera; midi; gyroscope; accelerometer; cross-origin-isolated"
         pkgframe.style.display = "none";
         pkgframe.src = "/archives/lib/"+lib+"/index.html#"+linkid
 
+        ns[lib] = pkgframe
         document.body.appendChild(pkgframe)
+
 
         const doc = pkgframe.contentDocument || pkgframe.contentWindow.document
         console.log("dlopen: linking ", pkgframe.id )

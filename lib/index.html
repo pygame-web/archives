@@ -2,19 +2,7 @@
 <head>
 <script>
 console.log("dlfcn:init")
-var ns = {}
-const delay = (ms, fn_solver) => new Promise(resolve => setTimeout(() => resolve(fn_solver()), ms));
-function _until(fn_solver){
-    return async function fwrapper(){
-        var argv = Array.from(arguments)
-        function solve_me(){return  fn_solver.apply(window, argv ) }
-        while (!await delay(1, solve_me ) )
-            {};
-    }
-}
-
-window._until =  _until
-
+var dlmap = {}
 function print(...argv) {
     stdout.innerHTML = stdout.innerHTML + argv.join(" ") + "\n"
 }
@@ -35,10 +23,10 @@ async function rx(event) {
         pkgframe.style.display = "none";
         pkgframe.src = "/archives/lib/"+lib+"/index.html#"+linkid
 
-        ns[linkid] = pkgframe
+        dlmap[linkid] = pkgframe
         document.body.appendChild(pkgframe)
         console.log("dlopen: linking ", pkgframe.id )
-        print("linking", lib)
+        print("+", lib)
 
     } else {
         if (rt == "dlfcn") {
@@ -50,7 +38,7 @@ async function rx(event) {
                     console.log("dlfcn->dlopen", linkid )
                     window.parent.postMessage("dlopen::"+linkid,  document.referrer)
                 } else {
-                    console.log("bus(53)", rxmsg)
+                    console.log("bus(41)", rxmsg)
                 }
             // return value with serial
             } else {
@@ -58,10 +46,10 @@ async function rx(event) {
                 window.parent.postMessage("dlopen:"+serial+":"+linkref, document.referrer)
             }
         } else {
-            if (!ns[rt])
-                console.log("bus(57)", rxmsg )
+            if (!dlmap[rt])
+                console.log("bus(50)", rxmsg )
             else
-                ns[rt].contentWindow.postMessage(e.shift())
+                dlmap[rt].contentWindow.postMessage(e.shift())
         }
     }
 }

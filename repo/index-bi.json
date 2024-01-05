@@ -11,7 +11,7 @@
     "_pyrsistent_version": "pkg/pyrsistent-0.19.2-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "_pytest": "pkg/pytest-7.1.2-py3-none-any.whl",
     "_yaml": "pkg/PyYAML-6.0.1-py3-none-any.whl.whl",
-    "_zengl": "pkg/zengl-1.10.2-<abi>-<abi>-<api>.whl",
+    "_zengl": "pkg/zengl-2.1.0-<abi>-<abi>-<api>.whl",
     "apipkg": "pkg/py-1.11.0-py2.py3-none-any.whl",
     "asciitree": "pkg/asciitree-0.3.3-py3-none-any.whl",
     "astropy": "pkg/astropy-0.0.0-<abi>-<abi>-wasm32_mvp_emscripten.whl",
@@ -105,6 +105,7 @@
     "pygame_gui": "pkg/pygame_gui-0.6.9-py3-none-any.whl",
     "pygame_texteditor": "pkg/pygame_texteditor-0.6.7-py3-none-any.whl",
     "pygame_widgets": "pkg/pygame_widgets-1.1.0-py3-none-any.whl",
+    "pygcurse": "pkg/pygcurse-1.0.1-py3-none-any.whl",
     "pyglet": "pkg/pyglet-2.0.10-py3-none-any.whl",
     "pygments": "pkg/Pygments-2.12.0-py3-none-any.whl",
     "pylab": "pkg/matplotlib-3.5.2-<abi>-<abi>-<api>.whl",
@@ -156,6 +157,6 @@
     "xlrd": "pkg/xlrd-2.0.1-py2.py3-none-any.whl",
     "yaml": "pkg/PyYAML-6.0.1-py3-none-any.whl.whl",
     "zarr": "pkg/zarr-2.11.3-py3-none-any.whl",
-    "zengl": "pkg/zengl-1.10.2-<abi>-<abi>-<api>.whl",
-    "zengl-stubs": "pkg/zengl-1.10.2-<abi>-<abi>-<api>.whl"
+    "zengl": "pkg/zengl-2.1.0-<abi>-<abi>-<api>.whl",
+    "zengl-stubs": "pkg/zengl-2.1.0-<abi>-<abi>-<api>.whl"
 }

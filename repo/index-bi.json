@@ -26,6 +26,7 @@
     "bs4": "pkg/beautifulsoup4-4.11.1-py3-none-any.whl",
     "bs4.builder": "pkg/beautifulsoup4-4.11.1-py3-none-any.whl",
     "bs4.tests": "pkg/beautifulsoup4-4.11.1-py3-none-any.whl",
+    "bson": "pkg/bson-0.5.10-py3-none-any.whl",
     "certifi": "pkg/certifi-2022.6.15-py3-none-any.whl",
     "cffi": "pkg/cffi-1.15.1-<abi>-<abi>-<api>.whl",
     "cloudpickle": "pkg/cloudpickle-2.1.0-py3-none-any.whl",

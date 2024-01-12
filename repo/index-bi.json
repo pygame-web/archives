@@ -11,8 +11,8 @@
     "_pyrsistent_version": "pkg/pyrsistent-0.19.2-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "_pytest": "pkg/pytest-7.1.2-py3-none-any.whl",
     "_yaml": "pkg/PyYAML-6.0.1-py3-none-any.whl.whl",
-    "_zengl": "pkg/zengl-2.2.0-<abi>-<abi>-<api>.whl",
-    "_zengl_js": "pkg/zengl-2.2.0-<abi>-<abi>-<api>.whl",
+    "_zengl": "pkg/zengl-2.2.1-<abi>-<abi>-<api>.whl",
+    "_zengl_js": "pkg/zengl-2.2.1-<abi>-<abi>-<api>.whl",
     "apipkg": "pkg/py-1.11.0-py2.py3-none-any.whl",
     "asciitree": "pkg/asciitree-0.3.3-py3-none-any.whl",
     "astropy": "pkg/astropy-0.0.0-<abi>-<abi>-wasm32_mvp_emscripten.whl",
@@ -47,6 +47,8 @@
     "future": "pkg/future-0.18.2-py3-none-any.whl",
     "glcontext": "pkg/glcontext-2.3.7-<abi>-<abi>-<api>.whl",
     "glcontext_emscriptem": "pkg/glcontext_emscriptem-0.1.0-<abi>-<abi>-wasm32_mvp_emscripten.whl",
+    "glm": "pkg/PyGLM-2.7.1-<abi>-<abi>-<api>.whl",
+    "glm-stubs": "pkg/PyGLM-2.7.1-<abi>-<abi>-<api>.whl",
     "gltf": "pkg/gltf-0.7.19-py3-none-any.whl",
     "graphics": "vendor/graphics.py",
     "harfang": "pkg/harfang-3.2.7-cp32-abi3-<api>.whl",
@@ -159,6 +161,6 @@
     "xlrd": "pkg/xlrd-2.0.1-py2.py3-none-any.whl",
     "yaml": "pkg/PyYAML-6.0.1-py3-none-any.whl.whl",
     "zarr": "pkg/zarr-2.11.3-py3-none-any.whl",
-    "zengl": "pkg/zengl-2.2.0-<abi>-<abi>-<api>.whl",
-    "zengl-stubs": "pkg/zengl-2.2.0-<abi>-<abi>-<api>.whl"
+    "zengl": "pkg/zengl-2.2.1-<abi>-<abi>-<api>.whl",
+    "zengl-stubs": "pkg/zengl-2.2.1-<abi>-<abi>-<api>.whl"
 }

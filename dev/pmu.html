@@ -1,0 +1,33 @@
+<html>
+<pre id=stdout>
+PMU
+</pre>
+
+</html>
+
+
+<script defer>
+
+// serial of last packet
+var lps = -1
+function unhex_utf8(s) {
+    var ary = []
+    for ( var i=0; i<s.length; i+=2 ) {
+        ary.push( parseInt(s.substr(i,2),16) )
+    }
+    return new TextDecoder().decode( new Uint8Array(ary) )
+}
+
+function boot() {
+
+    stdout.textContent = "-disconnected-"
+
+    //window.setInterval( pktdrv, 1 )
+
+    window.parent.postMessage("1", "*")
+
+}
+//window.addEventListener('load', wl )
+setTimeout(boot, 300, false)
+</script>
+

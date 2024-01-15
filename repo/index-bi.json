@@ -11,8 +11,8 @@
     "_pyrsistent_version": "pkg/pyrsistent-0.19.2-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "_pytest": "pkg/pytest-7.1.2-py3-none-any.whl",
     "_yaml": "pkg/PyYAML-6.0.1-py3-none-any.whl.whl",
-    "_zengl": "pkg/zengl-2.2.1-<abi>-<abi>-<api>.whl",
-    "_zengl_js": "pkg/zengl-2.2.1-<abi>-<abi>-<api>.whl",
+    "_zengl": "pkg/zengl-2.3.0-<abi>-<abi>-<api>.whl",
+    "_zengl_js": "pkg/zengl-2.3.0-<abi>-<abi>-<api>.whl",
     "apipkg": "pkg/py-1.11.0-py2.py3-none-any.whl",
     "asciitree": "pkg/asciitree-0.3.3-py3-none-any.whl",
     "astropy": "pkg/astropy-0.0.0-<abi>-<abi>-wasm32_mvp_emscripten.whl",
@@ -161,6 +161,6 @@
     "xlrd": "pkg/xlrd-2.0.1-py2.py3-none-any.whl",
     "yaml": "pkg/PyYAML-6.0.1-py3-none-any.whl.whl",
     "zarr": "pkg/zarr-2.11.3-py3-none-any.whl",
-    "zengl": "pkg/zengl-2.2.1-<abi>-<abi>-<api>.whl",
-    "zengl-stubs": "pkg/zengl-2.2.1-<abi>-<abi>-<api>.whl"
+    "zengl": "pkg/zengl-2.3.0-<abi>-<abi>-<api>.whl",
+    "zengl-stubs": "pkg/zengl-2.3.0-<abi>-<abi>-<api>.whl"
 }

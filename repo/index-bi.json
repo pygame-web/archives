@@ -86,6 +86,7 @@
     "numcodecs": "pkg/numcodecs-0.9.1-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "numpy": "pkg/numpy-1.25.2-<abi>-<abi>-<api>.whl",
     "nurses_2": "pkg/nurses_2-0.18.5-py3-none-any.whl",
+    "ofxparse": "pkg/ofxparse-0.21-py3-none-any.whl",
     "optlang": "pkg/optlang-1.5.2-py2.py3-none-any.whl",
     "packaging": "pkg/packaging-21.3-py3-none-any.whl",
     "panda3d": "pkg/panda3d-1.11.0-<abi>-<abi>-<api>.whl",

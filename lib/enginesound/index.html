@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <title>Engine Sound</title>
+        <script src="engine.js"></script>
+        <script src="/archives/lib/dlfcn.js" defer=true></script>
+        <script>
+        function vroom(string) {
+            return "vroom"
+        }
+        function onlink() {
+            console.log("engine sound")
+            linked()
+        }
+        window.onload = onlink
+        </script>
+    </head>
+  <body>
+    <p>Press start and hold <strong>UP</strong> to accelerate.</p>
+    <input type="button" id="start" value="Start" />
+    <input type="button" id="stop" value="Stop" />
+  </body>
+</html>

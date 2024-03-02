@@ -148,8 +148,17 @@ print("""
 for whl in Path(".").glob("pkg/*wasm32_bi_emscripten.whl"):
     whlname = whl.as_posix()
 
-    for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
-        whlname = whlname.replace(replace, "-<abi>")
+    if not whlname.find('-abi3-')>0:
+
+        # 0.9 drop 3.11
+        if whlname.find('-cp310')>0:
+            continue
+
+        if whlname.find('-cp311')>0:
+            continue
+
+        for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
+            whlname = whlname.replace(replace, "-<abi>")
 
     whlname = whlname.replace("-wasm32_bi_emscripten", "-<api>")
 
@@ -194,5 +203,5 @@ for py in Path(".").glob("vendor/*.py"):
 for k, v in MAP.items():
     print(k, v)
 
-with open("index-bi.json", "w") as f:
+with open("index-090bi.json", "w") as f:
     print(json.dumps(MAP, sort_keys=True, indent=4), file=f)

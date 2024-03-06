@@ -1,0 +1,20 @@
+<html>
+    <head>
+    <base href="."
+    </head>
+  <body>
+    <div id="count"></div>
+    <iframe src="sub.html"></iframe>
+    <iframe src="sub.html"></iframe>
+    <iframe src="sub.html"></iframe>
+    <iframe src="sub.html"></iframe>
+    <script>
+        let i = 0;
+        let div = document.getElementById("count");
+        setInterval(() => {
+            div.innerText = i++;
+        }, 100);
+    </script>
+    </body>
+
+</html>

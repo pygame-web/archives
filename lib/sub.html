@@ -1,0 +1,12 @@
+<html>
+ <body>
+    <button id="spin">spin</button>
+    <script>
+        const spin = document.getElementById("spin");
+        spin.addEventListener('click', () => {
+            const start = Date.now();
+            while (Date.now() - start < 3000) { }
+        })
+    </script>
+    </body>
+</html>

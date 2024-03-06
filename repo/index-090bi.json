@@ -10,8 +10,7 @@
     "_pyrsistent_version": "pkg/pyrsistent-0.19.2-<abi>-<abi>-wasm32_mvp_emscripten.whl",
     "_pytest": "pkg/pytest-7.1.2-py3-none-any.whl",
     "_yaml": "pkg/PyYAML-6.0.1-py3-none-any.whl.whl",
-    "_zengl": "pkg/zengl-2.3.0-<abi>-<abi>-<api>.whl",
-    "_zengl_js": "pkg/zengl-2.3.0-<abi>-<abi>-wasm32_bi_emscripten.whl",
+    "_zengl": "pkg/zengl-2.4.1-cp311-abi3-<api>.whl",
     "apipkg": "pkg/py-1.11.0-py2.py3-none-any.whl",
     "asciitree": "pkg/asciitree-0.3.3-py3-none-any.whl",
     "astropy": "pkg/astropy-0.0.0-<abi>-<abi>-wasm32_mvp_emscripten.whl",
@@ -49,7 +48,7 @@
     "glm-stubs": "pkg/PyGLM-2.7.1-<abi>-<abi>-wasm32_bi_emscripten.whl",
     "graphics": "vendor/graphics.py",
     "harfang": "pkg/harfang-3.2.7-cp32-abi3-<api>.whl",
-    "hpy": "pkg/hpy-0.1.dev1+gef1eef1.d20240227-<abi>-<abi>-wasm32_bi_emscripten.whl",
+    "hpy": "pkg/hpy-0.1.dev7+g95c51b9.d20240303-<abi>-<abi>-<api>.whl",
     "html5lib": "pkg/bleach-5.0.0-py3-none-any.whl",
     "i18n": "pkg/python_i18n-0.3.9-py3-none-any.whl",
     "igraph": "pkg/igraph-0.10.3-cp39-abi3-wasm32_mvp_emscripten.whl",
@@ -155,6 +154,6 @@
     "xlrd": "pkg/xlrd-2.0.1-py2.py3-none-any.whl",
     "yaml": "pkg/PyYAML-6.0.1-py3-none-any.whl.whl",
     "zarr": "pkg/zarr-2.11.3-py3-none-any.whl",
-    "zengl": "pkg/zengl-2.3.0-<abi>-<abi>-<api>.whl",
-    "zengl-stubs": "pkg/zengl-2.3.0-<abi>-<abi>-<api>.whl"
+    "zengl": "pkg/zengl-2.4.1-cp311-abi3-<api>.whl",
+    "zengl-stubs": "pkg/zengl-2.4.1-cp311-abi3-<api>.whl"
 }

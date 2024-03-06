@@ -48,7 +48,7 @@
     "glm-stubs": "pkg/PyGLM-2.7.1-<abi>-<abi>-wasm32_bi_emscripten.whl",
     "graphics": "vendor/graphics.py",
     "harfang": "pkg/harfang-3.2.7-cp32-abi3-<api>.whl",
-    "hpy": "pkg/hpy-0.1.dev7+g95c51b9.d20240303-<abi>-<abi>-<api>.whl",
+    "hpy": "pkg/hpy-0.1.dev7+g95c51b9.d20240306-<abi>-<abi>-<api>.whl",
     "html5lib": "pkg/bleach-5.0.0-py3-none-any.whl",
     "i18n": "pkg/python_i18n-0.3.9-py3-none-any.whl",
     "igraph": "pkg/igraph-0.10.3-cp39-abi3-wasm32_mvp_emscripten.whl",

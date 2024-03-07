@@ -1,11 +1,27 @@
 <html>
  <body>
-    <button id="spin">spin</button>
+
+    <button id=spin>spin</button>
+    <div id=stdout></div>
     <script>
+    var count=0;
+    function fib(n) {
+         if (n<2) { return n; } else { return fib(n-1)+fib(n-2); }
+    }
+
+    function cpuload() {
+        const start = Date.now()
+        while (Date.now() - start < 1000) {
+            fib(5);
+            stdout.innerText = count++;
+        }
+        setTimeout(cpuload, 0)
+    }
+
         const spin = document.getElementById("spin");
         spin.addEventListener('click', () => {
-            const start = Date.now();
-            while (Date.now() - start < 3000) { }
+            stdout.innerText = "started"
+            cpuload();
         })
     </script>
     </body>

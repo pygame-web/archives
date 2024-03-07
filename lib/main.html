@@ -1,20 +1,34 @@
 <html>
     <head>
-    <base href="."
-    </head>
-  <body>
-    <div id="count"></div>
-    <iframe src="sub.html"></iframe>
-    <iframe src="sub.html"></iframe>
-    <iframe src="sub.html"></iframe>
-    <iframe src="sub.html"></iframe>
-    <script>
+<!--    <base href="http://127.0.0.1:8000/archives/lib/"> -->
+<!--    <base href="."> -->
+<!--    <base href="https://pygame-web.github.io/archives/lib/"> -->
+    <base href="http://192.168.0.254/lib/">
+
+<style>
+iframe {
+    border:4;
+}
+</style>
+</head>
+
+
+<body>
+    cluster test, if topleft counter stops when clicking spin buttons header is not set
+
+<div id=count></div>
+<hr/>
+    <iframe src="sub.html" border=2></iframe>
+    <iframe src="sub.html" border=2></iframe>
+    <iframe src="sub.html" border=2></iframe>
+    <iframe src="sub.html" border=2></iframe>
+<script>
         let i = 0;
         let div = document.getElementById("count");
         setInterval(() => {
             div.innerText = i++;
         }, 100);
-    </script>
-    </body>
-
+</script>
+<hr/>
+</body>
 </html>

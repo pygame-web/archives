@@ -71,7 +71,7 @@
     "noise": "pkg/noise-1.2.2-<abi>-<abi>-<api>.whl",
     "nose": "pkg/nose-1.3.7-py3-none-any.whl",
     "nova": "pkg/nova-0.7.0-<abi>-<abi>-<api>.whl",
-    "numpy": "pkg/numpy-2.0.0.dev0-<abi>-<abi>-<api>.whl",
+    "numpy": "pkg/numpy-1.26.4-<abi>-<abi>-emscripten_3_1_52_wasm32.whl",
     "nurses_2": "pkg/nurses_2-0.18.5-py3-none-any.whl",
     "ofxparse": "pkg/ofxparse-0.21-py3-none-any.whl",
     "optlang": "pkg/optlang-1.5.2-py2.py3-none-any.whl",

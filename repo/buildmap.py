@@ -95,74 +95,8 @@ def _determine_major_import_names(
                 yield ".".join(subname)
 
 
-for whl in Path(".").glob("pkg/*.whl"):
-    whlname = whl.as_posix()
 
-    for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
-        whlname = whlname.replace(replace, "-<abi>")
-
-    found = False
-
-    with ZipFile(whl) as archive:
-        for name in archive.namelist():
-            if name.endswith(".dist-info/top_level.txt"):
-                f = archive.open(name)
-                for tln in f.read().decode().split("\n"):
-                    tln = tln.strip().replace("/", ".")
-                    if not tln:
-                        continue
-
-                    if tln == "src":
-                        continue
-
-                    if tln in MAP:
-                        # print(f"pkg name toplevel {tln} collision with", MAP[tln] )
-                        continue
-                    # print("\t",tln)
-                    MAP[tln] = whlname
-#=============================================================================
-                    if tln == "cwcwidth":
-                        MAP["wcwidth"] = whlname
-#=============================================================================
-                archive.close()
-                found = True
-                break
-        if not found:
-            print()
-            print("MISSING TOPLEVEL :", whl)
-            wheel_file = WheelFile(archive)
-            for tln in find_major_import_import_names(wheel_file):
-                MAP[tln] = whlname
-
-
-print("""
-
-
-
-        ============== bi ======================
-
-
-
-""")
-
-for whl in Path(".").glob("pkg/*wasm32_bi_emscripten.whl"):
-    whlname = whl.as_posix()
-
-    if not whlname.find('-abi3-')>0:
-
-        # 0.9 drop 3.11
-        if whlname.find('-cp310')>0:
-            continue
-
-        if whlname.find('-cp311')>0:
-            continue
-
-        for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
-            whlname = whlname.replace(replace, "-<abi>")
-
-    whlname = whlname.replace("-wasm32_bi_emscripten", "-<api>")
-
-
+def process_wheel(whl, whlname):
     found = False
 
     with ZipFile(whl) as archive:
@@ -193,6 +127,54 @@ for whl in Path(".").glob("pkg/*wasm32_bi_emscripten.whl"):
             wheel_file = WheelFile(archive)
             for tln in find_major_import_import_names(wheel_file):
                 MAP[tln] = whlname
+
+
+# process pure wheels and pyodide generated one -emscripten_3_M_mm_wasm32.whl
+
+for whl in Path(".").glob("pkg/*.whl"):
+    whlname = whl.as_posix()
+
+
+    if str(whl).find('-wasm32')>0:
+        continue
+
+    for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
+        whlname = whlname.replace(replace, "-<abi>")
+
+    process_wheel(whl, whlname)
+
+
+
+print("""
+
+
+        ============== bi ======================
+
+
+
+""")
+
+# grab only python-wasm-sdk wheels
+
+for whl in Path(".").glob("pkg/*wasm32_bi_emscripten.whl"):
+    whlname = whl.as_posix()
+
+    if not whlname.find('-abi3-')>0:
+
+        # 0.9 drop 3.11
+        if whlname.find('-cp310')>0:
+            continue
+
+        if whlname.find('-cp311')>0:
+            continue
+
+        for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
+            whlname = whlname.replace(replace, "-<abi>")
+
+    whlname = whlname.replace("-wasm32_bi_emscripten", "-<api>")
+
+    process_wheel(whl, whlname)
+
 
 # input()
 

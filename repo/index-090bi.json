@@ -29,6 +29,7 @@
     "cmyt": "pkg/cmyt-1.0.4-py3-none-any.whl",
     "colorspacious": "pkg/colorspacious-1.1.2-py2.py3-none-any.whl",
     "cssselect": "pkg/cssselect-1.1.0-py2.py3-none-any.whl",
+    "cv2": "pkg/opencv_python-4.9.0.80-<abi>-<abi>-emscripten_3_1_52_wasm32.whl",
     "cwcwidth": "pkg/cwcwidth-0.1.8-<abi>-<abi>-<api>.whl",
     "cycler": "pkg/cycler-0.11.0-py3-none-any.whl",
     "cython": "pkg/Cython-3.0.0a11-py2.py3-none-any.whl",

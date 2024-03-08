@@ -135,14 +135,17 @@ def process_wheel(whl, whlname):
 
 for whl in Path(".").glob("pkg/*.whl"):
     whlname = whl.as_posix()
-
+    abi3 = False
     # keep only abi3
     if str(whl).find('-wasm32')>0:
         if str(whl).find('-abi3-')<0:
             continue
+        else:
+            abi3=True
 
-    for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
-        whlname = whlname.replace(replace, "-<abi>")
+    if not abi3:
+        for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
+            whlname = whlname.replace(replace, "-<abi>")
 
     process_wheel(whl, whlname)
 

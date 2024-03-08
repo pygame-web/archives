@@ -129,7 +129,9 @@ def process_wheel(whl, whlname):
                 MAP[tln] = whlname
 
 
-# process pure wheels and pyodide generated one -emscripten_3_M_mm_wasm32.whl
+
+
+# process pure wheels and abi3
 
 for whl in Path(".").glob("pkg/*.whl"):
     whlname = whl.as_posix()
@@ -154,36 +156,50 @@ print("""
 
 """)
 
-# grab only python-wasm-sdk wheels
+UNIVERSAL = MAP.copy()
 
-for whl in Path(".").glob("pkg/*wasm32_bi_emscripten.whl"):
-    whlname = whl.as_posix()
+# get cpython versions
+for abi_folder in Path(".").glob("cp*"):
+    print(abi_folder)
 
-    if not whlname.find('-abi3-')>0:
+    MAP = UNIVERSAL.copy()
 
-        # 0.9 drop 3.11
-        if whlname.find('-cp310')>0:
-            continue
+    # grab only python-wasm-sdk wheels and pyodide generated one -emscripten_3_M_mm_wasm32.whl
+    # for matching version
 
-        if whlname.find('-cp311')>0:
-            continue
+    for whl in Path(".").glob(f"{abi_folder}/*wasm32*.whl"):
 
-        for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
-            whlname = whlname.replace(replace, "-<abi>")
+        whlname = whl.as_posix()
 
-    whlname = whlname.replace("-wasm32_bi_emscripten", "-<api>")
+        if not whlname.find('-abi3-')>0:
 
-    process_wheel(whl, whlname)
+            # 0.9 drop 3.11
+            if whlname.find('-cp310')>0:
+                continue
+
+            if whlname.find('-cp311')>0:
+                continue
+
+            for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
+                whlname = whlname.replace(replace, "-<abi>")
+
+        whlname = whlname.replace("-wasm32_bi_emscripten", "-<api>")
 
 
-# input()
+        process_wheel(whl, whlname)
 
-for py in Path(".").glob("vendor/*.py"):
-    tln = py.stem
-    MAP[tln] = py.as_posix()
 
-for k, v in MAP.items():
-    print(k, v)
+    # input()
 
-with open("index-090bi.json", "w") as f:
-    print(json.dumps(MAP, sort_keys=True, indent=4), file=f)
+    for py in Path(".").glob("vendor/*.py"):
+        tln = py.stem
+        MAP[tln] = py.as_posix()
+
+    for k, v in MAP.items():
+        print(k, v)
+
+    with open(f"index-090-{abi_folder}.json", "w") as f:
+        print(json.dumps(MAP, sort_keys=True, indent=4), file=f)
+
+
+

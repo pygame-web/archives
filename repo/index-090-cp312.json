@@ -79,6 +79,7 @@
     "panda3d": "cp312/panda3d-1.11.0-<abi>-<abi>-<api>.whl",
     "panda3d_tools": "cp312/panda3d-1.11.0-<abi>-<abi>-<api>.whl",
     "pandac": "cp312/panda3d-1.11.0-<abi>-<abi>-<api>.whl",
+    "pandas": "cp312/pandas-2.2.0-<abi>-<abi>-emscripten_3_1_52_wasm32.whl",
     "parso": "pkg/parso-0.8.3-py2.py3-none-any.whl",
     "particlepy": "pkg/particlepy-1.1.0-py3-none-any.whl",
     "past": "pkg/future-0.18.2-py3-none-any.whl",

@@ -1,6 +1,6 @@
 <html>
  <body>
-
+    <div id=label></div>
     <button id=spin>spin</button>
     <div id=stdout></div>
     <script>
@@ -11,18 +11,20 @@
 
     function cpuload() {
         const start = Date.now()
-        while (Date.now() - start < 1000) {
+        while (Date.now() - start < 16) {
             fib(5);
             stdout.innerText = count++;
         }
         setTimeout(cpuload, 0)
     }
 
-        const spin = document.getElementById("spin");
-        spin.addEventListener('click', () => {
-            stdout.innerText = "started"
-            cpuload();
-        })
+    const spin = document.getElementById("spin");
+    spin.addEventListener('click', () => {
+        stdout.innerText = "started"
+        cpuload();
+    })
+
+    label.innerText = window.document.location.hostname
     </script>
     </body>
 </html>

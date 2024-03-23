@@ -38,6 +38,8 @@
     "docutils": "pkg/docutils-0.18.1-py2.py3-none-any.whl",
     "fontTools": "pkg/fonttools-4.33.3-py3-none-any.whl",
     "future": "pkg/future-0.18.2-py3-none-any.whl",
+    "glm": "cp313/PyGLM-2.7.1-<abi>-<abi>-<api>.whl",
+    "glm-stubs": "cp313/PyGLM-2.7.1-<abi>-<abi>-<api>.whl",
     "graphics": "vendor/graphics.py",
     "harfang": "pkg/harfang-3.2.7-cp32-abi3-wasm32_bi_emscripten.whl",
     "html5lib": "pkg/html5lib-1.1-py2.py3-none-any.whl",

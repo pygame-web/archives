@@ -1033,6 +1033,9 @@ function feat_stdout() {
 
 
 function focus_handler(ev) {
+    if (!window.canvas)
+        return
+    
     if (ev.type == "click") {
         canvas.removeEventListener("click", MM.focus_handler)
         canvas.focus()

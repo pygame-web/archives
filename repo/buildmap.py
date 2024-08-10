@@ -51,9 +51,7 @@ def find_major_import_import_names(wheel: WheelSource) -> Iterable[str]:
     if not (metadata["Wheel-Version"] and metadata["Wheel-Version"].startswith("1.")):
         raise NotImplementedError("Only supports wheel 1.x")
 
-    filepaths: Iterable[str] = (
-        record_elements[0] for record_elements, _, _ in wheel.get_contents()
-    )
+    filepaths: Iterable[str] = (record_elements[0] for record_elements, _, _ in wheel.get_contents())
     importable_components = _find_importable_components_from_wheel_content_listing(
         filepaths, dist_info_dir=wheel.dist_info_dir, data_dir=wheel.data_dir
     )
@@ -61,9 +59,7 @@ def find_major_import_import_names(wheel: WheelSource) -> Iterable[str]:
     return _determine_major_import_names(importable_components)
 
 
-def _determine_major_import_names(
-    importable_components: Iterable[tuple[str, ...]]
-) -> Iterable[str]:
+def _determine_major_import_names(importable_components: Iterable[tuple[str, ...]]) -> Iterable[str]:
     # If you literally want the "top level", just do...
     # return {components[0] for components in importable_components}
 
@@ -95,7 +91,6 @@ def _determine_major_import_names(
                 yield ".".join(subname)
 
 
-
 def process_wheel(whl, whlname):
     found = False
 
@@ -107,16 +102,15 @@ def process_wheel(whl, whlname):
                     tln = tln.strip().replace("/", ".")
                     if not tln:
                         continue
-# https://matrix.to/#/!tzLDlLJSRpMoEoMBGG:gitter.im/$ARVOAirw4AiSn2wuzZs76QoKfKp7_PwFMlw2OhucS6g?via=gitter.im&via=matrix.org&via=ocf.berkeley.edu
-# pyodide's kiwisolver has src in dist-info toplevel
+                    # pyodide's kiwisolver has src in dist-info toplevel
                     if tln == "src":
                         continue
-#=============================================================================
+                    # =============================================================================
                     if tln == "cwcwidth":
                         MAP["wcwidth"] = whlname
-#=============================================================================
+                    # =============================================================================
                     if tln in MAP:
-                        print(f"override pkg name toplevel {tln} with", whlname )
+                        print(f"override pkg name toplevel {tln} with", whlname)
                     MAP[tln] = whlname
                 archive.close()
                 found = True
@@ -130,40 +124,57 @@ def process_wheel(whl, whlname):
 
 
 
+import pygbag
+
+
+
+print(
+    f"""
+
+        ============== {pygbag.VERSION = } pure/abi3-bi ======================
+
+
+"""
+)
+
 
 # process pure wheels and abi3
 
-for whl in Path(".").glob("pkg/*.whl"):
-    whlname = whl.as_posix()
-    abi3 = False
-    # keep only abi3
-    if str(whl).find('-wasm32')>0:
-        if str(whl).find('-abi3-')<0:
-            continue
-        else:
-            abi3=True
+for repo in ["pkg/*.whl",f"{pygbag.VERSION}/*.whl"]:
+    for whl in Path(".").glob(repo):
+        whlname = whl.as_posix()
+        abi3 = False
+        # keep only abi3
+        if str(whl).find("-wasm32") > 0:
+            if str(whl).find("-abi3-") < 0:
+                continue
+            else:
+                abi3 = True
 
-    if not abi3:
-        for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
-            whlname = whlname.replace(replace, "-<abi>")
+        if not abi3:
+            for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
+                whlname = whlname.replace(replace, "-<abi>")
 
-    process_wheel(whl, whlname)
-
-
-
-print("""
-
-
-        ============== bi ======================
+        process_wheel(whl, whlname)
 
 
 
-""")
+
+print(
+    f"""
+
+
+        ============== {pygbag.VERSION = } c-api bi ======================
+
+
+
+"""
+)
 
 UNIVERSAL = MAP.copy()
 
 # get cpython versions
-for abi_folder in Path(".").glob("cp*"):
+for abi_folder in Path(".").glob("cp3??"):
     print(abi_folder)
 
     MAP = UNIVERSAL.copy()
@@ -171,27 +182,24 @@ for abi_folder in Path(".").glob("cp*"):
     # grab only python-wasm-sdk wheels and pyodide generated one -emscripten_3_M_mm_wasm32.whl
     # for matching version
 
-    for whl in Path(".").glob(f"{abi_folder}/*wasm32*.whl"):
+    for repo in [f"{abi_folder}/*wasm32*.whl", f"{abi_folder}-{pygbag.VERSION}/*wasm32*.whl"]:
+        for whl in Path(".").glob(repo):
+            whlname = whl.as_posix()
 
-        whlname = whl.as_posix()
+            if not whlname.find("-abi3-") > 0:
+                # 0.9 drop 3.10 & 3.11
+                if whlname.find("-cp310") > 0:
+                    continue
 
-        if not whlname.find('-abi3-')>0:
+                if whlname.find("-cp311") > 0:
+                    continue
 
-            # 0.9 drop 3.11
-            if whlname.find('-cp310')>0:
-                continue
+                for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
+                    whlname = whlname.replace(replace, "-<abi>")
 
-            if whlname.find('-cp311')>0:
-                continue
+            whlname = whlname.replace("-wasm32_bi_emscripten", "-<api>")
 
-            for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
-                whlname = whlname.replace(replace, "-<abi>")
-
-        whlname = whlname.replace("-wasm32_bi_emscripten", "-<api>")
-
-
-        process_wheel(whl, whlname)
-
+            process_wheel(whl, whlname)
 
     # input()
 
@@ -202,8 +210,5 @@ for abi_folder in Path(".").glob("cp*"):
     for k, v in MAP.items():
         print(k, v)
 
-    with open(f"index-090-{abi_folder}.json", "w") as f:
+    with open(f"index-{pygbag.VERSION}-{abi_folder}.json", "w") as f:
         print(json.dumps(MAP, sort_keys=True, indent=4), file=f)
-
-
-

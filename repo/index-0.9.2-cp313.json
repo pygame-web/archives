@@ -8,7 +8,7 @@
     "_distutils_hack": "pkg/setuptools-62.6.0-py3-none-any.whl",
     "_pytest": "pkg/pytest-7.1.2-py3-none-any.whl",
     "_yaml": "pkg/PyYAML-6.0.1-py3-none-any.whl.whl",
-    "_zengl": "pkg/zengl-2.4.1-cp311-abi3-wasm32_bi_emscripten.whl",
+    "_zengl": "cp313-0.9.2/zengl-2.5.5-<abi>-<abi>-<api>.whl",
     "apipkg": "pkg/py-1.11.0-py2.py3-none-any.whl",
     "asciitree": "pkg/asciitree-0.3.3-py3-none-any.whl",
     "atomicwrites": "pkg/atomicwrites-1.4.0-py2.py3-none-any.whl",
@@ -38,8 +38,8 @@
     "docutils": "pkg/docutils-0.18.1-py2.py3-none-any.whl",
     "fontTools": "pkg/fonttools-4.33.3-py3-none-any.whl",
     "future": "pkg/future-0.18.2-py3-none-any.whl",
-    "glm": "cp313/PyGLM-2.7.1-<abi>-<abi>-<api>.whl",
-    "glm-stubs": "cp313/PyGLM-2.7.1-<abi>-<abi>-<api>.whl",
+    "glm": "cp313-0.9.2/PyGLM-2.7.2-<abi>-<abi>-<api>.whl",
+    "glm-stubs": "cp313-0.9.2/PyGLM-2.7.2-<abi>-<abi>-<api>.whl",
     "graphics": "vendor/graphics.py",
     "harfang": "0.9.2/harfang-3.2.7-cp32-abi3-wasm32_bi_emscripten.whl",
     "hpy": "cp313/hpy-0.1.dev1+g79fb330.d20240810-<abi>-<abi>-<api>.whl",
@@ -70,7 +70,7 @@
     "nltk": "pkg/nltk-3.7-py3-none-any.whl",
     "nose": "pkg/nose-1.3.7-py3-none-any.whl",
     "nova": "cp313/nova-0.7.0-<abi>-<abi>-<api>.whl",
-    "numpy": "cp313/numpy-2.0.0.dev0-<abi>-<abi>-<api>.whl",
+    "numpy": "cp313-0.9.2/numpy-2.1.0.dev0-<abi>-<abi>-<api>.whl",
     "nurses_2": "pkg/nurses_2-0.18.5-py3-none-any.whl",
     "ofxparse": "pkg/ofxparse-0.21-py3-none-any.whl",
     "optlang": "pkg/optlang-1.5.2-py2.py3-none-any.whl",
@@ -136,6 +136,6 @@
     "xlrd": "pkg/xlrd-2.0.1-py2.py3-none-any.whl",
     "yaml": "pkg/PyYAML-6.0.1-py3-none-any.whl.whl",
     "zarr": "pkg/zarr-2.11.3-py3-none-any.whl",
-    "zengl": "pkg/zengl-2.4.1-cp311-abi3-wasm32_bi_emscripten.whl",
-    "zengl-stubs": "pkg/zengl-2.4.1-cp311-abi3-wasm32_bi_emscripten.whl"
+    "zengl": "cp313-0.9.2/zengl-2.5.5-<abi>-<abi>-<api>.whl",
+    "zengl-stubs": "cp313-0.9.2/zengl-2.5.5-<abi>-<abi>-<api>.whl"
 }

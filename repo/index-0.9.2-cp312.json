@@ -103,7 +103,7 @@
     "pyfxr": "cp312/pyfxr-0.3.0-<abi>-<abi>-<api>.whl",
     "pyfxr_gui": "cp312/pyfxr-0.3.0-<abi>-<abi>-<api>.whl",
     "pygame.base": "cp312-0.9.2/pygame_static-1.0-<abi>-<abi>-<api>.whl",
-    "pygame_gui": "pkg/pygame_gui-0.6.12-py3-none-any.whl",
+    "pygame_gui": "pkg/pygame_gui-0.6.13-py3-none-any.whl",
     "pygame_texteditor": "pkg/pygame_texteditor-0.6.7-py3-none-any.whl",
     "pygame_widgets": "pkg/pygame_widgets-1.1.4-py3-none-any.whl",
     "pygcurse": "pkg/pygcurse-1.0.1-py3-none-any.whl",

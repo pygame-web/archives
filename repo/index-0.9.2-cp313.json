@@ -8,7 +8,7 @@
     "_distutils_hack": "pkg/setuptools-62.6.0-py3-none-any.whl",
     "_pytest": "pkg/pytest-7.1.2-py3-none-any.whl",
     "_yaml": "pkg/PyYAML-6.0.1-py3-none-any.whl.whl",
-    "_zengl": "cp313-0.9.2/zengl-2.5.5-<abi>-<abi>-<api>.whl",
+    "_zengl": "cp313-0.9.2/zengl-2.7.1-<abi>-<abi>-<api>.whl",
     "apipkg": "pkg/py-1.11.0-py2.py3-none-any.whl",
     "asciitree": "pkg/asciitree-0.3.3-py3-none-any.whl",
     "atomicwrites": "pkg/atomicwrites-1.4.0-py2.py3-none-any.whl",
@@ -43,7 +43,7 @@
     "glm-stubs": "cp313-0.9.2/PyGLM-2.7.2-<abi>-<abi>-<api>.whl",
     "graphics": "vendor/graphics.py",
     "harfang": "0.9.2/harfang-3.2.7-cp32-abi3-wasm32_bi_emscripten.whl",
-    "hpy": "cp313/hpy-0.1.dev1+g79fb330.d20241116-<abi>-<abi>-<api>.whl",
+    "hpy": "cp313/hpy-0.1.dev1+g79fb330.d20241203-<abi>-<abi>-<api>.whl",
     "html5lib": "pkg/html5lib-1.1-py2.py3-none-any.whl",
     "i18n": "pkg/python_i18n-0.3.9-py3-none-any.whl",
     "igraph": "pkg/igraph-0.10.3-cp39-abi3-wasm32_mvp_emscripten.whl",
@@ -140,6 +140,6 @@
     "xlrd": "pkg/xlrd-2.0.1-py2.py3-none-any.whl",
     "yaml": "pkg/PyYAML-6.0.1-py3-none-any.whl.whl",
     "zarr": "pkg/zarr-2.11.3-py3-none-any.whl",
-    "zengl": "cp313-0.9.2/zengl-2.5.5-<abi>-<abi>-<api>.whl",
-    "zengl-stubs": "cp313-0.9.2/zengl-2.5.5-<abi>-<abi>-<api>.whl"
+    "zengl": "cp313-0.9.2/zengl-2.7.1-<abi>-<abi>-<api>.whl",
+    "zengl-stubs": "cp313-0.9.2/zengl-2.7.1-<abi>-<abi>-<api>.whl"
 }

@@ -152,7 +152,7 @@ for repo in ["pkg/*.whl",f"{pygbag.VERSION}/*.whl"]:
                 abi3 = True
 
         if not abi3:
-            for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
+            for replace in ("-cp310", "-cp311", "-cp312", "-cp313", "-cp314"):
                 whlname = whlname.replace(replace, "-<abi>")
 
         process_wheel(whl, whlname)
@@ -194,7 +194,7 @@ for abi_folder in Path(".").glob("cp3??"):
                 if whlname.find("-cp311") > 0:
                     continue
 
-                for replace in ("-cp310", "-cp311", "-cp312", "-cp313"):
+                for replace in ("-cp310", "-cp311", "-cp312", "-cp313", "-cp314"):
                     whlname = whlname.replace(replace, "-<abi>")
 
             whlname = whlname.replace("-wasm32_bi_emscripten", "-<api>")

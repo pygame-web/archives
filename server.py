@@ -12,6 +12,9 @@ if ".wasm" not in mimetypes.types_map:
     )
     mimetypes.types_map[".wasm"] = "application/wasm"
 
+if ".wasi" not in mimetypes.types_map:
+    mimetypes.types_map[".wasi"] = "application/wasm"
+
 import argparse
 from http import server, HTTPStatus
 
